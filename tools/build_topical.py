@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Build topical PDFs from the CAIE AS Level IT (9626) Paper 1 past papers.
+"""Build a topical PDF from the CAIE AS Level IT (9626) Paper 1 past papers.
 
 Each question is cut out of its question paper and mark scheme, then grouped
 by syllabus topic using tools/question_topics.json.
 
     python tools/build_topical.py check   # verify every paper splits cleanly
     python tools/build_topical.py dump    # print question text (for classifying)
-    python tools/build_topical.py build   # write topical-papers/*.pdf
+    python tools/build_topical.py build   # write the topical PDF in topical-papers/
 """
 import json
 import re
@@ -367,12 +367,12 @@ MARGIN_TOP, MARGIN_BOTTOM = 40, 36
 LABEL_H = 22
 BLUE = (0.10, 0.30, 0.60)
 GREY = (0.4, 0.4, 0.4)
+OUT_NAME = "AS Level IT 9626 - Paper 1 topical past papers.pdf"
 
 
 class Writer:
-    def __init__(self, topic_no):
+    def __init__(self):
         self.doc = pymupdf.open()
-        self.topic_no = topic_no
         self.page = None
         self.y = 0
         self.toc = []
@@ -381,18 +381,18 @@ class Writer:
         w, h = (A4.height, A4.width) if landscape else (A4.width, A4.height)
         self.page = self.doc.new_page(width=w, height=h)
         self.y = MARGIN_TOP
-        title = f"Topic {self.topic_no}: {TOPICS[self.topic_no]}"
-        self.page.insert_text((40, 24), title, fontsize=8, fontname="helv", color=GREY)
         return self.page
 
     def room(self):
         return self.page.rect.height - MARGIN_BOTTOM - self.y
 
-    def section(self, title):
+    def heading(self, title, subtitle):
+        """Start a new page with a section title; returns the page index."""
         page = self.new_page()
         page.insert_text((40, 70), title, fontsize=22, fontname="hebo", color=BLUE)
-        self.toc.append([1, title, self.doc.page_count])
-        self.y = 92
+        page.insert_text((40, 94), subtitle, fontsize=14, fontname="helv", color=GREY)
+        self.y = 116
+        return page.number
 
     def question(self, label, src, segs):
         """Place a labelled question; returns (page index, label rect).
@@ -418,7 +418,6 @@ class Writer:
         rect = pymupdf.Rect(40, self.y, self.page.rect.width - 40, self.y + 18)
         self.page.draw_line(rect.bl, rect.br, color=BLUE, width=0.8)
         self.page.insert_text((40, self.y + 14), label, fontsize=10, fontname="hebo", color=BLUE)
-        self.toc.append([2, label, self.doc.page_count])
         placed = (self.page.number, rect)
         self.y += LABEL_H
         for (pno, clip), k in zip(segs, scales):
@@ -431,49 +430,66 @@ class Writer:
         self.y += 10
         return placed
 
-    def link(self, page_no, rect, text, to_page_no, to_rect):
-        """Clickable text at the right end of a question label."""
+    def link(self, page_no, rect, text, to_page_no, to_y=0, size=8):
+        """Clickable text right-aligned in rect, jumping to a page."""
         page = self.doc[page_no]
-        width = pymupdf.get_text_length(text, fontname="helv", fontsize=8)
-        at = pymupdf.Rect(rect.x1 - width, rect.y0 + 4, rect.x1, rect.y1)
-        page.insert_text((at.x0, rect.y0 + 14), text, fontsize=8, fontname="helv", color=BLUE)
+        width = pymupdf.get_text_length(text, fontname="helv", fontsize=size)
+        at = pymupdf.Rect(rect.x1 - width, rect.y1 - size - 4, rect.x1, rect.y1)
+        page.insert_text((at.x0, rect.y1 - 4), text, fontsize=size, fontname="helv", color=BLUE)
         page.insert_link({"kind": pymupdf.LINK_GOTO, "from": at, "page": to_page_no,
-                          "to": pymupdf.Point(0, to_rect.y0 - 10)})
+                          "to": pymupdf.Point(0, max(0, to_y - 10))})
 
     def finish(self, path):
-        for i, page in enumerate(self.doc):
-            w, h = page.rect.width, page.rect.height
-            page.insert_text((w - 60, h - 16), f"Page {i + 1}",
-                             fontsize=8, fontname="helv", color=GREY)
-            page.insert_text((40, h - 16),
-                             "Source: Cambridge International 9626 past papers. "
-                             "© UCLES / Cambridge University Press & Assessment.",
-                             fontsize=6, fontname="helv", color=GREY)
+        for page in self.doc:
+            if page.number:  # no number on the cover
+                text = str(page.number + 1)
+                width = pymupdf.get_text_length(text, fontname="helv", fontsize=8)
+                page.insert_text(((page.rect.width - width) / 2, page.rect.height - 18), text,
+                                 fontsize=8, fontname="helv", color=GREY)
         self.doc.set_toc(self.toc)
         self.doc.save(path, garbage=4, deflate=True)
 
 
-def cover(w, topic_no, items):
+def cover(w, by_topic):
     page = w.new_page()
-    page.insert_text((40, 140), "Cambridge International AS Level", fontsize=14,
+    page.insert_text((40, 150), "Cambridge International AS Level", fontsize=14,
                      fontname="helv", color=GREY)
-    page.insert_text((40, 162), "Information Technology 9626 · Paper 1 Theory",
-                     fontsize=14, fontname="helv", color=GREY)
-    page.insert_text((40, 230), f"Topic {topic_no}", fontsize=20, fontname="hebo", color=BLUE)
-    page.insert_textbox(pymupdf.Rect(40, 245, A4.width - 40, 330), TOPICS[topic_no],
-                        fontsize=28, fontname="hebo", color=BLUE)
-    papers = sorted({it["paper"] for it in items}, key=sort_key)
+    page.insert_text((40, 172), "Information Technology 9626", fontsize=14,
+                     fontname="helv", color=GREY)
+    page.insert_textbox(pymupdf.Rect(40, 230, A4.width - 40, 340),
+                        "Paper 1 Theory\nTopical past papers", fontsize=30,
+                        fontname="hebo", color=BLUE)
+    unique = {(it["paper"], it["q"]) for its in by_topic.values() for it in its}
+    papers = qp_files()  # includes papers that repeat another paper's questions
     first, last = (paper_label(p).split(" ", 1)[1] for p in (papers[0], papers[-1]))
-    body = (f"{len(items)} questions from {len(papers)} question papers, "
-            f"{first} to {last}.\n\n"
-            "Questions come first, in date order, then their mark schemes in the same "
-            "order. Each question is labelled with the paper it came from. Click "
-            "\"Mark scheme\" next to a question to jump to its answers, or use the "
-            "bookmarks panel.\n\n"
-            "A question that covers more than one topic appears in each of those topics. "
-            "Topics follow the 2025-2027 syllabus.")
-    page.insert_textbox(pymupdf.Rect(40, 350, A4.width - 40, 600), body, fontsize=11,
+    body = (f"{len(unique)} questions from {len(papers)} question papers, {first} to "
+            f"{last}, sorted into the {len(TOPICS)} AS Level topics.\n\n"
+            "Each topic has its questions first, in date order, then their mark schemes in "
+            "the same order. Every question is labelled with the paper it came from. Click "
+            "\"Mark scheme\" next to a question to jump to its answers, use the contents "
+            "page to jump to a topic, or use the bookmarks panel.\n\n"
+            "A question that covers more than one topic appears under each of them. Topics "
+            "follow the 2025-2027 syllabus.")
+    page.insert_textbox(pymupdf.Rect(40, 370, A4.width - 40, 640), body, fontsize=11,
                         fontname="helv")
+    page.insert_textbox(pymupdf.Rect(40, 760, A4.width - 40, 800),
+                        "Source: Cambridge International 9626 past papers. "
+                        "© UCLES / Cambridge University Press & Assessment.",
+                        fontsize=8, fontname="helv", color=GREY)
+
+
+def contents(w, starts):
+    """Fill in the contents page now that every topic's pages are known."""
+    page = w.doc[1]
+    page.insert_text((40, 70), "Contents", fontsize=22, fontname="hebo", color=BLUE)
+    y = 120
+    for n, (qp_page, ms_page) in starts.items():
+        page.insert_text((40, y), f"{n}", fontsize=12, fontname="hebo", color=BLUE)
+        page.insert_text((66, y), TOPICS[n], fontsize=12, fontname="helv")
+        row = pymupdf.Rect(300, y - 14, 445, y + 4)
+        w.link(1, row, f"Questions  p. {qp_page + 1}", qp_page, size=10)
+        w.link(1, row + (150, 0, 150, 0), f"Mark schemes  p. {ms_page + 1}", ms_page, size=10)
+        y += 40
 
 
 def cmd_build():
@@ -484,6 +500,8 @@ def cmd_build():
         for q, nums in questions.get(qp.stem, {}).items():
             for n in nums:
                 by_topic[n].append({"paper": qp, "q": int(q)})
+    for items in by_topic.values():
+        items.sort(key=lambda it: (sort_key(it["paper"]), it["q"]))
     OUT.mkdir(exist_ok=True)
     for old in OUT.glob("*.pdf"):
         old.unlink()
@@ -494,13 +512,20 @@ def cmd_build():
             cache[path] = fn(path)
         return cache[path]
 
+    w = Writer()
+    cover(w, by_topic)
+    w.new_page()  # contents, filled in at the end
+    w.toc.append([1, "Contents", 2])
+    starts = {}
     for n, items in by_topic.items():
-        items.sort(key=lambda it: (sort_key(it["paper"]), it["q"]))
-        w = Writer(n)
-        cover(w, n, items)
         placed = {}
-        for kind, fn, title in (("qp", split_qp, "Questions"), ("ms", split_ms, "Mark schemes")):
-            w.section(title)
+        title = f"{n}  {TOPICS[n]}"
+        for kind, fn, part in (("qp", split_qp, "Questions"), ("ms", split_ms, "Mark schemes")):
+            first = w.heading(title, part)
+            if kind == "qp":
+                w.toc.append([1, title, first + 1])
+            w.toc.append([2, part, first + 1])
+            starts.setdefault(n, []).append(first)
             for it in items:
                 path = it["paper"].with_name(it["paper"].name.replace("_qp_", f"_{kind}_"))
                 doc, segs = split(path, fn)
@@ -511,15 +536,17 @@ def cmd_build():
                 label += f" · Question {it['q']}"
                 if kind == "ms":
                     label = "Mark scheme · " + label
-                placed[kind, it["paper"], it["q"]] = w.question(label, doc, segs[it["q"]])
+                at = placed[kind, it["paper"], it["q"]] = w.question(label, doc, segs[it["q"]])
+                w.toc.append([3, label, at[0] + 1])
         for it in items:
-            qp_at = placed["qp", it["paper"], it["q"]]
-            ms_at = placed["ms", it["paper"], it["q"]]
-            w.link(*qp_at, "Mark scheme", *ms_at)
-            w.link(*ms_at, "Back to question", *qp_at)
-        name = f"{n:02d} - {TOPICS[n]}.pdf"
-        w.finish(OUT / name)
-        print(f"{name}: {len(items)} questions, {w.doc.page_count} pages")
+            (qp_page, qp_rect), (ms_page, ms_rect) = (placed[k, it["paper"], it["q"]]
+                                                      for k in ("qp", "ms"))
+            w.link(qp_page, qp_rect, "Mark scheme", ms_page, ms_rect.y0)
+            w.link(ms_page, ms_rect, "Back to question", qp_page, qp_rect.y0)
+        print(f"{n:2d} {TOPICS[n]}: {len(items)} questions")
+    contents(w, starts)
+    w.finish(OUT / OUT_NAME)
+    print(f"{OUT_NAME}: {w.doc.page_count} pages")
     return 0
 
 
