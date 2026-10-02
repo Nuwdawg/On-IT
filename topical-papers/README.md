@@ -2,7 +2,7 @@
 
 | PDF | What's in it |
 |-----|--------------|
-| `AS Level IT 9626 - Paper 1 high-signal questions.pdf` | 110 questions: 10 for each of the 11 AS Level topics |
+| `AS Level IT 9626 - Paper 1 high-signal questions.pdf` | 110 questions: 10 for each of the 11 AS Level topics, without answer space |
 | `AS Level IT 9626 - Paper 1 high-signal mark schemes.pdf` | The mark schemes for those questions, in the same order |
 
 Topics: 1 Data processing and information · 2 Hardware and software ·
@@ -26,8 +26,11 @@ The shortlist is `tools/high_signal.json`. To swap a question, edit it and rebui
 - Questions are numbered 1.1 to 11.10 and labelled with the paper they came
   from, e.g. *1.2 9626/12 May/June 2024 · Question 7*. The mark schemes use the
   same numbers.
-- Long questions run on to the next page, split between lines, as in the
-  original papers.
+- The questions PDF leaves out the blank answer lines and empty answer boxes.
+  Each part keeps its marks, e.g. **[4]**, and labels such as "Humidity" or
+  "Way 1". Tables, diagrams and code to complete are kept. Where an algorithm
+  has missing lines, one dotted line marks each gap.
+- Long questions and mark schemes run on to the next page, split between lines.
 - The bookmarks panel lists every question.
 
 ## Notes
