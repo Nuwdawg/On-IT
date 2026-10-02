@@ -24,7 +24,7 @@ Oct-Nov 2025 variants `11` and `13` are separate papers that contain the same qu
 The three May-June 2026 question papers display and print normally, but their text
 can't be searched or copied.
 
-For the same questions grouped by syllabus topic, see [`../topical-papers`](../topical-papers).
+For 10 high-signal questions per syllabus topic, with their mark schemes in a separate PDF, see [`../topical-papers`](../topical-papers).
 
 ---
 These papers are © Cambridge University Press & Assessment and are here for personal revision.

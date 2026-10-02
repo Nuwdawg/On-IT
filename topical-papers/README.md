@@ -1,53 +1,50 @@
-# AS Level IT (9626) Paper 1: Topical Past Papers
+# AS Level IT (9626) Paper 1: High-Signal Topical Questions
 
-`AS Level IT 9626 - Paper 1 topical past papers.pdf` holds every Paper 1
-(Theory) question from Feb/March 2022 to May/June 2026, sorted by syllabus topic:
+| PDF | What's in it |
+|-----|--------------|
+| `AS Level IT 9626 - Paper 1 high-signal questions.pdf` | 110 questions: 10 for each of the 11 AS Level topics |
+| `AS Level IT 9626 - Paper 1 high-signal mark schemes.pdf` | The mark schemes for those questions, in the same order |
 
-| Topic | Questions |
-|-------|-----------|
-| 1 Data processing and information | 87 |
-| 2 Hardware and software | 59 |
-| 3 Monitoring and control | 35 |
-| 4 Algorithms and flowcharts | 29 |
-| 5 eSecurity | 30 |
-| 6 The digital divide | 17 |
-| 7 Expert systems | 20 |
-| 8 Spreadsheets | 11 |
-| 9 Modelling | 17 |
-| 10 Database and file concepts | 35 |
-| 11 Video and audio editing | 14 |
+Topics: 1 Data processing and information · 2 Hardware and software ·
+3 Monitoring and control · 4 Algorithms and flowcharts · 5 eSecurity ·
+6 The digital divide · 7 Expert systems · 8 Spreadsheets · 9 Modelling ·
+10 Database and file concepts · 11 Video and audio editing
 
-## How the PDF is laid out
+## How the questions were picked
 
-- The **contents page** links to the start of each topic's questions and mark
-  schemes.
-- Each topic has its **questions** first, oldest paper first. Each one is cut
-  straight from the original paper, answer lines included, and labelled with
-  its source, e.g. *9626/12 Feb/March 2022 · Question 7*. The topic's **mark
-  schemes** follow in the same order.
-- Click **Mark scheme** next to a question to jump to its answers, and
-  **Back to question** to return. The bookmarks panel lists every question.
+Each topic's 10 come from all 338 Paper 1 questions from Feb/March 2022 to
+May/June 2026. Together they cover the points that topic tests most often,
+favouring longer (6–8 mark) and more recent questions. Repeats are left out, and
+no question appears under two topics. Within a topic they follow the syllabus
+order.
+
+The shortlist is `tools/high_signal.json`. To swap a question, edit it and rebuild.
+
+## Layout
+
+- The contents page links to each topic.
+- Questions are numbered 1.1 to 11.10 and labelled with the paper they came
+  from, e.g. *1.2 9626/12 May/June 2024 · Question 7*. The mark schemes use the
+  same numbers.
+- Long questions run on to the next page, split between lines, as in the
+  original papers.
+- The bookmarks panel lists every question.
 
 ## Notes
 
 - Topic names follow the 2025–2027 syllabus. Cambridge says its content is
   largely the same as the 2022–2024 syllabus.
-- A question that covers more than one topic appears under each of them. For
-  example, a pseudocode question about a greenhouse is under both *Monitoring and
-  control* and *Algorithms and flowcharts*. That's why the counts above add up
-  to more than the 338 questions.
-- Oct/Nov 2025 papers 9626/11 and 9626/13 have the same questions, so they
-  appear once, labelled with both codes.
-- Topics were assigned by reading each question. If you'd file a question
-  differently, change its topic numbers in `tools/question_topics.json` and
-  rebuild.
+- Oct/Nov 2025 papers 9626/11 and 9626/13 have the same questions, so those
+  questions are labelled with both codes.
+- `tools/question_topics.json` gives the topics of every question, not just the
+  shortlisted ones.
 
 ## Rebuilding
 
 ```bash
 pip install pymupdf
 python tools/build_topical.py check   # every paper splits cleanly into questions
-python tools/build_topical.py build   # rewrites the PDF in this folder
+python tools/build_topical.py build   # rewrites both PDFs in this folder
 ```
 
 ---

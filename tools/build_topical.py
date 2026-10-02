@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""Build a topical PDF from the CAIE AS Level IT (9626) Paper 1 past papers.
+"""Build topical PDFs from the CAIE AS Level IT (9626) Paper 1 past papers.
 
-Each question is cut out of its question paper and mark scheme, then grouped
-by syllabus topic using tools/question_topics.json.
+Every question is cut out of its question paper and mark scheme. The shortlist
+in tools/high_signal.json picks 10 questions per syllabus topic; they go into a
+questions PDF and a matching mark schemes PDF. tools/question_topics.json gives
+the topics of every question.
 
     python tools/build_topical.py check   # verify every paper splits cleanly
     python tools/build_topical.py dump    # print question text (for classifying)
-    python tools/build_topical.py build   # write the topical PDF in topical-papers/
+    python tools/build_topical.py build   # write the two PDFs in topical-papers/
 """
 import json
 import re
@@ -19,6 +21,7 @@ ROOT = Path(__file__).resolve().parent.parent
 PAPERS = ROOT / "past-papers"
 OUT = ROOT / "topical-papers"
 TOPICS_FILE = ROOT / "tools" / "question_topics.json"
+SHORTLIST_FILE = ROOT / "tools" / "high_signal.json"
 
 TOPICS = {
     1: "Data processing and information",
@@ -311,6 +314,33 @@ def load_topics():
     return data["questions"], data["same_questions"]
 
 
+def load_shortlist():
+    """{topic: [(question paper path, question number), ...]} in reading order."""
+    data = json.loads(SHORTLIST_FILE.read_text())
+    out = {}
+    for n in TOPICS:
+        out[n] = []
+        for ref in data[str(n)]:  # e.g. "s24_12 Q7"
+            m = re.fullmatch(r"([msw]\d\d)_(\d\d) Q(\d+)", ref)
+            out[n].append((PAPERS / f"9626_{m.group(1)}_qp_{m.group(2)}.pdf", int(m.group(3))))
+    return out
+
+
+def check_shortlist(questions):
+    problems, seen = [], set()
+    for n, refs in load_shortlist().items():
+        for qp, q in refs:
+            topics = questions.get(qp.stem, {}).get(str(q))
+            if topics is None:
+                problems.append(f"{qp.stem} Q{q} is not a known question")
+            elif n not in topics:
+                problems.append(f"{qp.stem} Q{q} is listed under topic {n} but tagged {topics}")
+            if (qp, q) in seen:
+                problems.append(f"{qp.stem} Q{q} is listed twice")
+            seen.add((qp, q))
+    return problems
+
+
 def cmd_check():
     """Every paper must split into the same questions as its mark scheme, and
     every question must have at least one topic."""
@@ -348,6 +378,9 @@ def cmd_check():
                 problems.append(f"missing or unknown topics for {bad}")
         ok &= not problems
         print(f"{qp.name}: {len(q)} questions  " + ("; ".join(problems) or "ok"))
+    problems = check_shortlist(questions)
+    ok &= not problems
+    print("high_signal.json: " + ("; ".join(problems) or "ok"))
     return 0 if ok else 1
 
 
@@ -367,7 +400,46 @@ MARGIN_TOP, MARGIN_BOTTOM = 40, 36
 LABEL_H = 22
 BLUE = (0.10, 0.30, 0.60)
 GREY = (0.4, 0.4, 0.4)
-OUT_NAME = "AS Level IT 9626 - Paper 1 topical past papers.pdf"
+MIN_SPLIT_ROOM = 100  # don't start a question piece in less space than this
+MIN_PIECE = 60        # nor leave a piece shorter than this on either side of a split
+QP_NAME = "AS Level IT 9626 - Paper 1 high-signal questions.pdf"
+MS_NAME = "AS Level IT 9626 - Paper 1 high-signal mark schemes.pdf"
+
+
+def table_borders(page):
+    """x positions of a mark scheme table's column borders, read off the
+    'Question | Answer | Marks' header row."""
+    xs = set()
+    for x0, y0, x1, y1, t, _ in text_lines(page, "ms"):
+        if t == "Question" and x0 < 70:
+            for d in page.get_drawings():
+                r = d["rect"]
+                if r.width <= 2 and r.y0 <= y1 and r.y1 >= y0:
+                    xs.add(round(r.x0))
+    return xs
+
+
+def cut_point(page, clip, max_height, kind):
+    """Lowest y in clip, at most max_height below its top, that falls in a gap
+    between lines (so a split there cuts no text or picture), or None. In mark
+    schemes a split may cross the table's column borders, as at a page break."""
+    borders = table_borders(page) if kind == "ms" else set()
+
+    def is_border(b):
+        return b.width <= 3 and any(abs(b.x0 + 1 - x) <= 2 for x in borders)
+
+    spans = sorted((b.y0, b.y1) for b in ink_boxes(page, kind)
+                   if b.y1 > clip.y0 and b.y0 < clip.y1 and not is_border(b))
+    merged = []
+    for y0, y1 in spans:
+        if merged and y0 <= merged[-1][1] + 1:
+            merged[-1][1] = max(merged[-1][1], y1)
+        else:
+            merged.append([y0, y1])
+    cuts = [(a[1] + b[0]) / 2 for a, b in zip(merged, merged[1:]) if b[0] - a[1] >= 4]
+    cuts = [y for y in cuts if clip.y0 + MIN_PIECE <= y <= clip.y0 + max_height
+            and y <= clip.y1 - MIN_PIECE]
+    return max(cuts) if cuts else None
 
 
 class Writer:
@@ -386,19 +458,21 @@ class Writer:
     def room(self):
         return self.page.rect.height - MARGIN_BOTTOM - self.y
 
-    def heading(self, title, subtitle):
+    def heading(self, title):
         """Start a new page with a section title; returns the page index."""
         page = self.new_page()
         page.insert_text((40, 70), title, fontsize=22, fontname="hebo", color=BLUE)
-        page.insert_text((40, 94), subtitle, fontsize=14, fontname="helv", color=GREY)
-        self.y = 116
+        self.y = 92
         return page.number
 
-    def question(self, label, src, segs):
+    def question(self, label, src, segs, kind):
         """Place a labelled question; returns (page index, label rect).
 
-        Landscape source pages (some mark schemes) go on landscape pages, and a
-        piece taller than a whole page is scaled down to fit.
+        A piece that doesn't fit in the space left on a page is split at a gap
+        between lines, so long questions run on to the next page instead of
+        leaving the bottom of the page empty. Landscape source pages (some mark
+        schemes) go on landscape pages, and a piece taller than a whole page is
+        scaled down to fit.
         """
         def landscape(pno):
             return src[pno].rect.width > src[pno].rect.height
@@ -407,13 +481,21 @@ class Writer:
             usable = (A4.width if landscape(pno) else A4.height) - MARGIN_TOP - MARGIN_BOTTOM
             return min(1.0, (usable - reserve) / clip.height)
 
-        def needs_new_page(pno, height):
-            here = self.page.rect.width > self.page.rect.height
-            return here != landscape(pno) or self.room() < height
+        def same_orientation(pno):
+            return (self.page.rect.width > self.page.rect.height) == landscape(pno)
+
+        def fits(pno, clip, k, room):
+            """How much of clip goes on this page: all of it, a part ending at a cut, or none."""
+            if clip.height * k <= room:
+                return clip.y1
+            if room < MIN_SPLIT_ROOM:
+                return None
+            return cut_point(src[pno], clip, room / k, kind)
 
         scales = [scale(pno, clip, LABEL_H if i == 0 else 0) for i, (pno, clip) in enumerate(segs)]
         first_pno, first_clip = segs[0]
-        if self.page is None or needs_new_page(first_pno, LABEL_H + first_clip.height * scales[0]):
+        if (self.page is None or not same_orientation(first_pno)
+                or fits(first_pno, first_clip, scales[0], self.room() - LABEL_H) is None):
             self.new_page(landscape(first_pno))  # keep the label with the start of the question
         rect = pymupdf.Rect(40, self.y, self.page.rect.width - 40, self.y + 18)
         self.page.draw_line(rect.bl, rect.br, color=BLUE, width=0.8)
@@ -421,12 +503,19 @@ class Writer:
         placed = (self.page.number, rect)
         self.y += LABEL_H
         for (pno, clip), k in zip(segs, scales):
-            h = clip.height * k
-            if needs_new_page(pno, h):
-                self.new_page(landscape(pno))
-            target = pymupdf.Rect(clip.x0, self.y, clip.x0 + clip.width * k, self.y + h)
-            self.page.show_pdf_page(target, src, pno, clip=clip)
-            self.y += h + 2
+            while clip.height > 0.5:
+                end = fits(pno, clip, k, self.room()) if same_orientation(pno) else None
+                if end is None:
+                    self.new_page(landscape(pno))
+                    continue
+                piece = pymupdf.Rect(clip.x0, clip.y0, clip.x1, end)
+                target = pymupdf.Rect(piece.x0, self.y, piece.x0 + piece.width * k,
+                                      self.y + piece.height * k)
+                self.page.show_pdf_page(target, src, pno, clip=piece)
+                self.y += piece.height * k + 2
+                clip = pymupdf.Rect(clip.x0, end, clip.x1, clip.y1)
+                if clip.height > 0.5:
+                    self.new_page(landscape(pno))
         self.y += 10
         return placed
 
@@ -450,26 +539,14 @@ class Writer:
         self.doc.save(path, garbage=4, deflate=True)
 
 
-def cover(w, by_topic):
+def cover(w, title, body):
     page = w.new_page()
     page.insert_text((40, 150), "Cambridge International AS Level", fontsize=14,
                      fontname="helv", color=GREY)
     page.insert_text((40, 172), "Information Technology 9626", fontsize=14,
                      fontname="helv", color=GREY)
-    page.insert_textbox(pymupdf.Rect(40, 230, A4.width - 40, 340),
-                        "Paper 1 Theory\nTopical past papers", fontsize=30,
+    page.insert_textbox(pymupdf.Rect(40, 230, A4.width - 40, 340), title, fontsize=30,
                         fontname="hebo", color=BLUE)
-    unique = {(it["paper"], it["q"]) for its in by_topic.values() for it in its}
-    papers = qp_files()  # includes papers that repeat another paper's questions
-    first, last = (paper_label(p).split(" ", 1)[1] for p in (papers[0], papers[-1]))
-    body = (f"{len(unique)} questions from {len(papers)} question papers, {first} to "
-            f"{last}, sorted into the {len(TOPICS)} AS Level topics.\n\n"
-            "Each topic has its questions first, in date order, then their mark schemes in "
-            "the same order. Every question is labelled with the paper it came from. Click "
-            "\"Mark scheme\" next to a question to jump to its answers, use the contents "
-            "page to jump to a topic, or use the bookmarks panel.\n\n"
-            "A question that covers more than one topic appears under each of them. Topics "
-            "follow the 2025-2027 syllabus.")
     page.insert_textbox(pymupdf.Rect(40, 370, A4.width - 40, 640), body, fontsize=11,
                         fontname="helv")
     page.insert_textbox(pymupdf.Rect(40, 760, A4.width - 40, 800),
@@ -479,74 +556,74 @@ def cover(w, by_topic):
 
 
 def contents(w, starts):
-    """Fill in the contents page now that every topic's pages are known."""
+    """Fill in the contents page now that every topic's first page is known."""
     page = w.doc[1]
     page.insert_text((40, 70), "Contents", fontsize=22, fontname="hebo", color=BLUE)
     y = 120
-    for n, (qp_page, ms_page) in starts.items():
+    for n, first in starts.items():
         page.insert_text((40, y), f"{n}", fontsize=12, fontname="hebo", color=BLUE)
         page.insert_text((66, y), TOPICS[n], fontsize=12, fontname="helv")
-        row = pymupdf.Rect(300, y - 14, 445, y + 4)
-        w.link(1, row, f"Questions  p. {qp_page + 1}", qp_page, size=10)
-        w.link(1, row + (150, 0, 150, 0), f"Mark schemes  p. {ms_page + 1}", ms_page, size=10)
-        y += 40
+        w.link(1, pymupdf.Rect(400, y - 14, A4.width - 40, y + 4), f"p. {first + 1}", first,
+               size=11)
+        y += 36
 
 
-def cmd_build():
-    questions, same = load_topics()
-    also = {orig: dup for dup, orig in same.items()}
-    by_topic = {n: [] for n in TOPICS}
-    for qp in qp_files():
-        for q, nums in questions.get(qp.stem, {}).items():
-            for n in nums:
-                by_topic[n].append({"paper": qp, "q": int(q)})
-    for items in by_topic.values():
-        items.sort(key=lambda it: (sort_key(it["paper"]), it["q"]))
-    OUT.mkdir(exist_ok=True)
-    for old in OUT.glob("*.pdf"):
-        old.unlink()
+def source_label(qp, q, also):
+    label = paper_label(qp)
+    if qp.stem in also:
+        twin = paper_id(Path(also[qp.stem] + ".pdf"))[2]
+        label = label.replace(" ", f" and 9626/{twin} ", 1)
+    return f"{label} · Question {q}"
+
+
+def write_pdf(name, kind, title, body, shortlist, also):
+    split = split_qp if kind == "qp" else split_ms
     cache = {}
-
-    def split(path, fn):
-        if path not in cache:
-            cache[path] = fn(path)
-        return cache[path]
-
     w = Writer()
-    cover(w, by_topic)
+    cover(w, title, body)
     w.new_page()  # contents, filled in at the end
     w.toc.append([1, "Contents", 2])
     starts = {}
-    for n, items in by_topic.items():
-        placed = {}
-        title = f"{n}  {TOPICS[n]}"
-        for kind, fn, part in (("qp", split_qp, "Questions"), ("ms", split_ms, "Mark schemes")):
-            first = w.heading(title, part)
-            if kind == "qp":
-                w.toc.append([1, title, first + 1])
-            w.toc.append([2, part, first + 1])
-            starts.setdefault(n, []).append(first)
-            for it in items:
-                path = it["paper"].with_name(it["paper"].name.replace("_qp_", f"_{kind}_"))
-                doc, segs = split(path, fn)
-                label = paper_label(path)
-                if it["paper"].stem in also:
-                    twin = paper_id(Path(also[it["paper"].stem] + ".pdf"))[2]
-                    label = label.replace(" ", f" and 9626/{twin} ", 1)
-                label += f" · Question {it['q']}"
-                if kind == "ms":
-                    label = "Mark scheme · " + label
-                at = placed[kind, it["paper"], it["q"]] = w.question(label, doc, segs[it["q"]])
-                w.toc.append([3, label, at[0] + 1])
-        for it in items:
-            (qp_page, qp_rect), (ms_page, ms_rect) = (placed[k, it["paper"], it["q"]]
-                                                      for k in ("qp", "ms"))
-            w.link(qp_page, qp_rect, "Mark scheme", ms_page, ms_rect.y0)
-            w.link(ms_page, ms_rect, "Back to question", qp_page, qp_rect.y0)
-        print(f"{n:2d} {TOPICS[n]}: {len(items)} questions")
+    for n, refs in shortlist.items():
+        heading = f"{n}  {TOPICS[n]}"
+        starts[n] = w.heading(heading)
+        w.toc.append([1, heading, starts[n] + 1])
+        for i, (qp, q) in enumerate(refs, 1):
+            path = qp if kind == "qp" else ms_for(qp)
+            if path not in cache:
+                cache[path] = split(path)
+            doc, segs = cache[path]
+            label = f"{n}.{i}   {source_label(qp, q, also)}"
+            page_no, _ = w.question(label, doc, segs[q], kind)
+            w.toc.append([2, label, page_no + 1])
     contents(w, starts)
-    w.finish(OUT / OUT_NAME)
-    print(f"{OUT_NAME}: {w.doc.page_count} pages")
+    w.finish(OUT / name)
+    print(f"{name}: {w.doc.page_count} pages")
+
+
+def cmd_build():
+    _, same = load_topics()
+    also = {orig: dup for dup, orig in same.items()}
+    shortlist = load_shortlist()
+    total = sum(len(refs) for refs in shortlist.values())
+    each = {len(refs) for refs in shortlist.values()}
+    per_topic = f"{each.pop()} per topic" if len(each) == 1 else "a shortlist for each topic"
+    first, last = (paper_label(p).split(" ", 1)[1] for p in (qp_files()[0], qp_files()[-1]))
+    OUT.mkdir(exist_ok=True)
+    for old in OUT.glob("*.pdf"):
+        old.unlink()
+    write_pdf(QP_NAME, "qp", "Paper 1 Theory\nHigh-signal questions", (
+        f"{total} questions, {per_topic} across the {len(TOPICS)} AS Level topics, picked "
+        f"from every Paper 1 question from {first} to {last}. In each topic they cover "
+        "the points examined most often, favouring longer and more recent questions, "
+        "and run in syllabus order.\n\n"
+        "Each question is numbered (1.1, 1.2, ...) and labelled with the paper it came "
+        f"from. The answers are in \"{MS_NAME}\", numbered the same way."),
+        shortlist, also)
+    write_pdf(MS_NAME, "ms", "Paper 1 Theory\nHigh-signal mark schemes", (
+        f"Mark schemes for the {total} questions in \"{QP_NAME}\", numbered the same way "
+        "(1.1, 1.2, ...) and labelled with the paper each question came from."),
+        shortlist, also)
     return 0
 
 
