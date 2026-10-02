@@ -1,52 +1,23 @@
-# Cambridge International AS Level Information Technology (9626): Past Papers, 2022 onwards
+# Cambridge International AS Level Information Technology (9626): Theory Past Papers, 2022 onwards
 
-AS Level papers only: **Paper 1** (Theory) and **Paper 2** (Practical).
-Papers 3 and 4 are A Level papers and aren't included.
-
-## Folder layout
-
-```
-past-papers/<year>/<session>/
-```
-
-Sessions: `Feb-March` (m), `May-June` (s), `Oct-Nov` (w).
+AS Level **Paper 1 (Theory)** question papers and mark schemes. All files are in this one folder.
 
 ## File naming
 
-`9626_<session><yy>_<type>_<component>`
+`9626_<session><yy>_<type>_<variant>.pdf`
 
-| Type | Meaning |
+| Part | Meaning |
 |------|---------|
-| `qp` | Question paper |
-| `ms` | Mark scheme |
-| `sf` | Source files for the practical paper (zip) |
-| `er` | Examiner report (covers all components) |
-| `gt` | Grade thresholds |
+| Session `m` / `s` / `w` | Feb-March / May-June / Oct-Nov |
+| `yy` | Year, e.g. `24` = 2024 |
+| `qp` / `ms` | Question paper / mark scheme |
+| Variant `11`, `12`, `13` | Paper 1 variants 1 to 3 (Feb-March has only `12`) |
 
-| Component | Paper |
-|-----------|-------|
-| `11`, `12`, `13` | Paper 1 Theory, variants 1 to 3 (Feb/March has only variant 12) |
-| `02` / `2` | Paper 2 Practical (single variant) |
+Example: `9626_w24_qp_12.pdf` is the Oct/Nov 2024 Paper 1, variant 2 question paper.
 
 ## Coverage
 
-| Year | Feb-March | May-June | Oct-Nov |
-|------|-----------|----------|---------|
-| 2022 | ✅ | ✅ | ✅ |
-| 2023 | ✅ | ✅ | ✅ |
-| 2024 | ✅ | ✅ | ✅ |
-| 2025 | ✅ | ✅ | ✅ |
-| 2026 | ✅ | ✅ (no examiner report yet) | not sat yet |
-
-## Note: Oct/Nov 2022 practical source files
-
-`2022/Oct-Nov/9626_w22_sf_02.zip` is larger than GitHub's 100 MB file limit, so it's
-split into parts. To rebuild the zip:
-
-```bash
-cat 9626_w22_sf_02.zip.part* > 9626_w22_sf_02.zip        # macOS / Linux
-copy /b 9626_w22_sf_02.zip.part00+9626_w22_sf_02.zip.part01+9626_w22_sf_02.zip.part02 9626_w22_sf_02.zip   # Windows
-```
+Every series from Feb-March 2022 to May-June 2026. Oct-Nov 2026 hasn't been sat yet.
 
 ---
 These papers are © Cambridge University Press & Assessment and are here for personal revision.
