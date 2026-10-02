@@ -19,5 +19,12 @@ Example: `9626_w24_qp_12.pdf` is the Oct/Nov 2024 Paper 1, variant 2 question pa
 
 Every series from Feb-March 2022 to May-June 2026. Oct-Nov 2026 hasn't been sat yet.
 
+Oct-Nov 2025 variants `11` and `13` are separate papers that contain the same questions.
+
+The three May-June 2026 question papers display and print normally, but their text
+can't be searched or copied.
+
+For the same questions grouped by syllabus topic, see [`../topical-papers`](../topical-papers).
+
 ---
 These papers are © Cambridge University Press & Assessment and are here for personal revision.
