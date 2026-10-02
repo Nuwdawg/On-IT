@@ -13,6 +13,7 @@ the topics of every question.
 import json
 import re
 import sys
+from collections import Counter
 from pathlib import Path
 
 import pymupdf
@@ -379,6 +380,11 @@ def cmd_check():
         ok &= not problems
         print(f"{qp.name}: {len(q)} questions  " + ("; ".join(problems) or "ok"))
     problems = check_shortlist(questions)
+    if not problems:
+        for refs in load_shortlist().values():
+            for qp, q in refs:
+                doc, segs = split_qp(qp)
+                problems += [f"{qp.stem} Q{q}: {p}" for p in compact_problems(doc, segs[q])]
     ok &= not problems
     print("high_signal.json: " + ("; ".join(problems) or "ok"))
     return 0 if ok else 1
@@ -402,8 +408,194 @@ BLUE = (0.10, 0.30, 0.60)
 GREY = (0.4, 0.4, 0.4)
 MIN_SPLIT_ROOM = 100  # don't start a question piece in less space than this
 MIN_PIECE = 60        # nor leave a piece shorter than this on either side of a split
+ANSWER_GAP = 18       # in the questions PDF, close up blank space taller than this
 QP_NAME = "AS Level IT 9626 - Paper 1 high-signal questions.pdf"
 MS_NAME = "AS Level IT 9626 - Paper 1 high-signal mark schemes.pdf"
+
+
+def has_ink(page, rect):
+    rect = rect & page.rect
+    if rect.is_empty or rect.width < 0.5 or rect.height < 0.5:
+        return False
+    pix = page.get_pixmap(clip=rect, dpi=144, colorspace=pymupdf.csGRAY)
+    return min(pix.samples) < 160
+
+
+def ink_box(page, chars, x_min, x_max):
+    """Box around the chars that leave ink, padded a little but kept within
+    [x_min, x_max], or None. (In a scrambled font even a space isn't
+    whitespace, so this looks at the page rather than the text.)"""
+    box = None
+    for c in chars:
+        r = pymupdf.Rect(c["bbox"])
+        r.x0, r.x1 = max(r.x0, x_min), min(r.x1, x_max)
+        if not c["c"].isspace() and has_ink(page, r + (0, 1, 0, -1)):
+            box = r if box is None else box | r
+    if box is None:
+        return None
+    return pymupdf.Rect(max(box.x0 - 2, x_min), box.y0, min(box.x1 + 2, x_max), box.y1)
+
+
+def answer_lines(page, clip):
+    """Dotted answer lines in clip as (line rect, label rect or None, marks rect
+    or None). The label is any text before the dots, e.g. "Humidity", or
+    "UNTIL" in an algorithm to complete; the marks follow the dots, e.g. "[4]"."""
+    left, right = x_range(page, "qp")
+    found = []
+    for block in page.get_text("rawdict", clip=clip)["blocks"]:
+        for line in block.get("lines", []):
+            rect = pymupdf.Rect(line["bbox"])
+            chars = [c for span in line["spans"] for c in span["chars"]]
+            solid = [c["c"] for c in chars if not c["c"].isspace()]
+            if rect.x0 < left or rect.x1 > right or len(solid) < 20:
+                continue
+            dot, count = Counter(solid).most_common(1)[0]
+            if count < 20 or count < 0.8 * len(solid):
+                continue
+            at = [i for i, c in enumerate(chars) if c["c"] == dot]
+            dots = [pymupdf.Rect(chars[i]["bbox"]) for i in at]
+            if any(b.x0 - a.x1 > 1.5 and has_ink(page, pymupdf.Rect(a.x1 + 0.3, rect.y0 + 1,
+                                                                     b.x0 - 0.3, rect.y1 - 1))
+                   for a, b in zip(dots, dots[1:])):
+                continue  # words between the dots: a fill-in-the-blank sentence, keep it whole
+            label = ink_box(page, chars[:at[0]], rect.x0 - 2, dots[0].x0 - 0.3)
+            if re.fullmatch(r"\d{1,2}", "".join(c["c"] for c in chars[:at[0]]).strip()):
+                label = None  # "1 ....", "2 ....": numbering for the answers
+            marks = ink_box(page, chars[at[-1] + 1:], dots[-1].x1 + 0.3, rect.x1 + 2)
+            found.append((rect, label, marks))
+    return found
+
+
+def empty_frames(page):
+    """Big drawn boxes with nothing inside: space to draw an answer in."""
+    inside = [pymupdf.Rect(l[:4]) for l in text_lines(page, "qp")]
+    inside += [pymupdf.Rect(i["bbox"]) for i in page.get_image_info()]
+    drawings = []
+    for d in page.get_drawings():
+        half = (d.get("width") or 0) / 2  # strokes spill past the path's rect
+        drawings.append(pymupdf.Rect(d["rect"]) + (-half, -half, half, half))
+    frames = []
+    for r in drawings:
+        if r.width > 200 and r.height > 80 and not any(
+                r.contains(o) and o != r for o in inside + drawings):
+            frames.append(r)
+    return frames
+
+
+def compact(doc, segs):
+    """A question's pieces with its blank answer space left out.
+
+    Returns [(page, strip, parts)]: a strip of the page to copy, either whole
+    (parts None) or only the x ranges in parts, e.g. a label and its marks.
+    Dotted answer lines and empty answer boxes go, and blank space taller than
+    ANSWER_GAP between kept lines is closed up. Where blank lines stand for
+    missing lines of an algorithm (no marks, with code just above and below),
+    one dotted line stays to show the gap.
+    """
+    pieces = []
+    for pno, clip in segs:
+        page = doc[pno]
+        answers = answer_lines(page, clip)
+        frames = empty_frames(page)
+
+        def dropped_ink(b):
+            return any(abs(b.y0 - r.y0) < 0.6 and abs(b.y1 - r.y1) < 0.6
+                       and abs(b.x0 - r.x0) < 0.6 for r, _, _ in answers) or any(
+                abs(b.x0 - f.x0) < 2 and abs(b.y0 - f.y0) < 2 and abs(b.x1 - f.x1) < 2
+                and abs(b.y1 - f.y1) < 2 for f in frames)
+
+        ink = [b for b in ink_boxes(page, "qp")
+               if b.y1 > clip.y0 and b.y0 < clip.y1 and not dropped_ink(b)]
+        blocks = []
+        for b in sorted(ink, key=lambda b: b.y0):
+            y0, y1 = max(b.y0, clip.y0), min(b.y1, clip.y1)
+            if blocks and y0 <= blocks[-1][1] + ANSWER_GAP:
+                blocks[-1][1] = max(blocks[-1][1], y1)
+            else:
+                blocks.append([y0, y1])
+        kept = [r for r, _, _ in answers
+                if any(y0 - 4 <= r.y0 and r.y1 <= y1 + 4 for y0, y1 in blocks)]
+
+        def marks_only(block):
+            inner = [b for b in ink if b.y0 >= block[0] - 0.5 and b.y1 <= block[1] + 0.5]
+            return all(b.width < 30 and b.x0 > 470 for b in inner)
+
+        runs = []  # unlabelled blank lines in a row
+        for rect, label, marks in sorted(answers, key=lambda a: a[0].y0):
+            if rect in kept:
+                continue
+            if label or not runs or rect.y0 - runs[-1][-1][0].y1 > 20:
+                runs.append([])
+            runs[-1].append((rect, label, marks))
+        for run in runs:
+            first, last = run[0][0], run[-1][0]
+            if any(label or marks for _, label, marks in run):
+                continue
+            above = any(0 <= first.y0 - y1 < 20 for y0, y1 in blocks)
+            below = [b for b in blocks if 0 <= b[0] - last.y1 < 20 and not marks_only(b)]
+            if above and below:
+                kept.append(first)  # one dotted line marks the missing code
+                blocks.append([first.y0, first.y1])
+        blocks.sort()
+
+        dropped = [r for r, _, _ in answers if r not in kept]
+        dropped += [f for f in frames if f.intersects(clip)]
+        items = []
+        for y0, y1 in blocks:
+            top, bottom = max(clip.y0, y0 - 4), min(clip.y1, y1 + 4)
+            for r in dropped:  # don't let the padding reach into a dropped line's dots
+                if r.y0 < y0 and r.y1 > top:
+                    top = max(top, min(r.y1, y0))
+                if r.y1 > y1 and r.y0 < bottom:
+                    bottom = min(bottom, max(r.y0, y1))
+            items.append((y0, pymupdf.Rect(clip.x0, top, clip.x1, bottom), None))
+        for rect, label, marks in answers:
+            if rect in kept:
+                continue  # part of a table, code listing or diagram
+            parts = [box for box in (label, marks) if box]
+            if parts:
+                strip = pymupdf.Rect(clip.x0, rect.y0 - 1, clip.x1, rect.y1 + 1)
+                items.append((rect.y0, strip, parts))
+        pieces += [(pno, strip, parts) for _, strip, parts in sorted(items, key=lambda it: it[0])]
+    return pieces
+
+
+def compact_problems(doc, segs):
+    """Text that compact() loses, and dots from dropped answer lines that it keeps."""
+    pieces = compact(doc, segs)
+    problems = []
+    for pno, clip in segs:
+        page = doc[pno]
+        answers = answer_lines(page, clip)
+        mine = [(strip, parts) for p, strip, parts in pieces if p == pno]
+        kept = [pymupdf.Rect(strip) for strip, parts in mine if parts is None]
+        rows = [part & strip for strip, parts in mine if parts for part in parts]
+
+        def covered(r):  # with a little slack: Rect & rounds to 32-bit floats
+            return any(k.x0 - 0.05 <= r.x0 and k.y0 - 0.05 <= r.y0 and
+                       r.x1 <= k.x1 + 0.05 and r.y1 <= k.y1 + 0.05 for k in kept + rows)
+
+        dropped = [a for a in answers if not covered(a[0])]
+        for x0, y0, x1, y1, t, _ in text_lines(page, "qp"):
+            r = pymupdf.Rect(x0, y0, x1, y1)
+            if r.intersects(clip) and r.y0 >= clip.y0 - 1 and r.y1 <= clip.y1 + 1:
+                if not any(abs(r.y0 - a[0].y0) < 0.6 and abs(r.x0 - a[0].x0) < 0.6
+                           for a in dropped) and not covered(r):
+                    problems.append(f"p{pno + 1} lost {t[:30]!r}")
+        for line, label, marks in dropped:
+            for box, what in ((label, "label"), (marks, "marks")):
+                if box and not covered(box):
+                    problems.append(f"p{pno + 1} lost {what} at y={line.y0:.0f}")
+            dots = pymupdf.Rect(label.x1 if label else line.x0, line.y0,
+                                marks.x0 if marks else line.x1, line.y1)
+            for k in kept:
+                if has_ink(page, (k & dots) + (0.3, 0, -0.3, 0)):
+                    problems.append(f"p{pno + 1} dots kept at y={line.y0:.0f}")
+        for frame in empty_frames(page):
+            for k in kept:
+                if frame.intersects(clip) and has_ink(page, k & frame):
+                    problems.append(f"p{pno + 1} edge of an empty answer box kept")
+    return problems
 
 
 def table_borders(page):
@@ -465,56 +657,59 @@ class Writer:
         self.y = 92
         return page.number
 
-    def question(self, label, src, segs, kind):
-        """Place a labelled question; returns (page index, label rect).
+    def question(self, label, src, pieces, kind):
+        """Place a labelled question made of pieces [(page, strip, parts)]
+        (see compact); returns (page index, label rect).
 
-        A piece that doesn't fit in the space left on a page is split at a gap
-        between lines, so long questions run on to the next page instead of
+        A whole strip that doesn't fit in the space left on a page is split at a
+        gap between lines, so long questions run on to the next page instead of
         leaving the bottom of the page empty. Landscape source pages (some mark
-        schemes) go on landscape pages, and a piece taller than a whole page is
+        schemes) go on landscape pages, and a strip taller than a whole page is
         scaled down to fit.
         """
         def landscape(pno):
             return src[pno].rect.width > src[pno].rect.height
 
-        def scale(pno, clip, reserve=0):
+        def scale(pno, strip, reserve=0):
             usable = (A4.width if landscape(pno) else A4.height) - MARGIN_TOP - MARGIN_BOTTOM
-            return min(1.0, (usable - reserve) / clip.height)
+            return min(1.0, (usable - reserve) / strip.height)
 
         def same_orientation(pno):
             return (self.page.rect.width > self.page.rect.height) == landscape(pno)
 
-        def fits(pno, clip, k, room):
-            """How much of clip goes on this page: all of it, a part ending at a cut, or none."""
-            if clip.height * k <= room:
-                return clip.y1
-            if room < MIN_SPLIT_ROOM:
+        def fits(pno, strip, parts, k, room):
+            """How much of strip goes on this page: all of it, a part ending at a cut, or none."""
+            if strip.height * k <= room:
+                return strip.y1
+            if parts or room < MIN_SPLIT_ROOM:
                 return None
-            return cut_point(src[pno], clip, room / k, kind)
+            return cut_point(src[pno], strip, room / k, kind)
 
-        scales = [scale(pno, clip, LABEL_H if i == 0 else 0) for i, (pno, clip) in enumerate(segs)]
-        first_pno, first_clip = segs[0]
+        scales = [scale(pno, strip, LABEL_H if i == 0 else 0)
+                  for i, (pno, strip, _) in enumerate(pieces)]
+        first_pno, first_strip, first_parts = pieces[0]
         if (self.page is None or not same_orientation(first_pno)
-                or fits(first_pno, first_clip, scales[0], self.room() - LABEL_H) is None):
+                or fits(first_pno, first_strip, first_parts, scales[0], self.room() - LABEL_H) is None):
             self.new_page(landscape(first_pno))  # keep the label with the start of the question
         rect = pymupdf.Rect(40, self.y, self.page.rect.width - 40, self.y + 18)
         self.page.draw_line(rect.bl, rect.br, color=BLUE, width=0.8)
         self.page.insert_text((40, self.y + 14), label, fontsize=10, fontname="hebo", color=BLUE)
         placed = (self.page.number, rect)
         self.y += LABEL_H
-        for (pno, clip), k in zip(segs, scales):
-            while clip.height > 0.5:
-                end = fits(pno, clip, k, self.room()) if same_orientation(pno) else None
+        for (pno, strip, parts), k in zip(pieces, scales):
+            while strip.height > 0.5:
+                end = fits(pno, strip, parts, k, self.room()) if same_orientation(pno) else None
                 if end is None:
                     self.new_page(landscape(pno))
                     continue
-                piece = pymupdf.Rect(clip.x0, clip.y0, clip.x1, end)
-                target = pymupdf.Rect(piece.x0, self.y, piece.x0 + piece.width * k,
-                                      self.y + piece.height * k)
-                self.page.show_pdf_page(target, src, pno, clip=piece)
-                self.y += piece.height * k + 2
-                clip = pymupdf.Rect(clip.x0, end, clip.x1, clip.y1)
-                if clip.height > 0.5:
+                for part in parts or [pymupdf.Rect(strip.x0, strip.y0, strip.x1, end)]:
+                    piece = pymupdf.Rect(part.x0, strip.y0, part.x1, end)
+                    target = pymupdf.Rect(piece.x0, self.y, piece.x0 + piece.width * k,
+                                          self.y + piece.height * k)
+                    self.page.show_pdf_page(target, src, pno, clip=piece)
+                self.y += (end - strip.y0) * k + 2
+                strip = pymupdf.Rect(strip.x0, end, strip.x1, strip.y1)
+                if strip.height > 0.5:
                     self.new_page(landscape(pno))
         self.y += 10
         return placed
@@ -593,8 +788,12 @@ def write_pdf(name, kind, title, body, shortlist, also):
             if path not in cache:
                 cache[path] = split(path)
             doc, segs = cache[path]
+            if kind == "qp":
+                pieces = compact(doc, segs[q])
+            else:
+                pieces = [(pno, clip, None) for pno, clip in segs[q]]
             label = f"{n}.{i}   {source_label(qp, q, also)}"
-            page_no, _ = w.question(label, doc, segs[q], kind)
+            page_no, _ = w.question(label, doc, pieces, kind)
             w.toc.append([2, label, page_no + 1])
     contents(w, starts)
     w.finish(OUT / name)
@@ -617,6 +816,8 @@ def cmd_build():
         f"from every Paper 1 question from {first} to {last}. In each topic they cover "
         "the points examined most often, favouring longer and more recent questions, "
         "and run in syllabus order.\n\n"
+        "Blank answer lines are left out to save pages; the number in brackets after each "
+        "part, e.g. [4], is how many marks it is worth.\n\n"
         "Each question is numbered (1.1, 1.2, ...) and labelled with the paper it came "
         f"from. The answers are in \"{MS_NAME}\", numbered the same way."),
         shortlist, also)
