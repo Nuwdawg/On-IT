@@ -1,0 +1,1554 @@
+{
+ "_comment": "Topic(s) of every distinct 9702 Paper 4 question from 2020 onwards (2025-2027 syllabus topics 12-25), and the 7 hardest questions chosen for each topic. Question ids are <session><yy>_<variant>_Q<n>, e.g. w21_42_Q1 = 9702/42 October/November 2021 Question 1. Variant 43 repeats variant 41 in every series, so only 41 is listed. \"why\" quotes the examiner report; questions from series without a report were chosen on judgement.",
+ "chosen": {
+  "12": [
+   {
+    "q": "w21_42_Q1",
+    "why": "(ii) Candidates found this question difficult and many demonstrated a weak understanding of the forces involved in circular motion. There was a widespread misunderstanding that centripetal force is some sort of additional force that has to ‘balance’ the weight; very few candidates appeared to understand that the centripetal force is the resultant of the weight and the normal contact force from the track."
+   },
+   {
+    "q": "s23_41_Q2",
+    "why": "(a) This question proved to be challenging. (ii) This ‘show that’ question proved to be challenging as candidates found it difficult to resolve forces correctly here."
+   },
+   {
+    "q": "w25_42_Q1",
+    "why": "Very few candidates were able to deduce that the other force is the contact force from the surface of the Earth upwards from the surface and slightly to the left."
+   },
+   {
+    "q": "w23_42_Q1",
+    "why": "(ii) This question proved to be a little more challenging for some of the candidates, but stronger candidates were generally able to calculate the value of L correctly. (d) This was a challenging question."
+   },
+   {
+    "q": "m25_42_Q1",
+    "why": "Candidates found it more difficult to use the trigonometry involved in getting to the magnitude of the resultant force from the weight of the sphere. (e) A very common misconception was that the angular frequency must remain unchanged, leading to direct proportionality between speed and radius."
+   },
+   {
+    "q": "w25_41_Q1",
+    "why": "It was rarely written that the magnitude of the acceleration was also constant. Only the strongest candidates appreciated that drawing the shadow as a whole gave a greater opportunity to correctly identify the position of maximum positive acceleration."
+   },
+   {
+    "q": "s26_42_Q1",
+    "why": "No examiner report yet (May/June 2026). Chosen on judgement: resolving the tilted lift force into a vertical component that balances the weight and a horizontal component that provides the centripetal force, then using tan θ = v²/rg, is a step many candidates miss."
+   }
+  ],
+  "13": [
+   {
+    "q": "m21_42_Q1",
+    "why": "(b) Many candidates found this calculation challenging. Only the strongest candidates made reference to work needing to be done on the rock in moving it from its orbit to infinity (or vice versa)."
+   },
+   {
+    "q": "w23_42_Q2",
+    "why": "(b) (i) Most candidates realised that the magnitude of potential energy is obtained by multiplying the potential by the mass, but a significant minority thought that there is a negative relationship between gravitational potential and gravitational potential energy. (e) This was another challenging question."
+   },
+   {
+    "q": "w22_42_Q1",
+    "why": "(a) Only a minority of candidates knew the syllabus ‘bookwork’ that defines gravitational field as force per unit mass. (ii) Only the most able candidates had an understanding that the two forces acting on the object are the weight of the object downwards and the normal contact force upwards from the Earth’s surface."
+   },
+   {
+    "q": "w21_41_Q2",
+    "why": "A large number of candidates approached this question by discussing forces. The idea that the gravitational field strengths from the Earth and the Moon were both equal in magnitude and opposite in direction was only mentioned by the strongest candidates."
+   },
+   {
+    "q": "m20_42_Q1",
+    "why": "(ii) Candidates found this part challenging."
+   },
+   {
+    "q": "m22_42_Q1",
+    "why": "(b) Only stronger candidates answered fully correctly but many gave at least one of the points being looked for. It was common to see responses in which gravitational and centripetal forces were discussed as being different forces that somehow balance each other out."
+   },
+   {
+    "q": "s22_41_Q1",
+    "why": "(ii) This explanation proved challenging for many candidates, particularly those who referred to forces rather than fields. (iii) This type of calculation can be challenging unless the candidates take the square root of the entire expression in the early stages of the algebra."
+   }
+  ],
+  "14": [
+   {
+    "q": "s25_41_Q3",
+    "why": "(b) A comparison of the change in volume or molecular separation and the corresponding change in potential energy of the molecules between vaporisation and fusion was rarely explained well by candidates. Very few candidates who had an explanation in terms of volume and potential energy change referred to the kinetic energy of molecules being unchanged."
+   },
+   {
+    "q": "m25_42_Q3",
+    "why": "However, only the strongest candidates correctly analysed the energy transfers involved to arrive at the correct answer. However, only the strongest candidates realised that, because the gas is expanding, the work done on the gas must be negative."
+   },
+   {
+    "q": "w24_42_Q3",
+    "why": "Weaker candidates found it difficult to work out the mass of the substance, with use of the volume of the gas with the density of the liquid being the common incorrect starting point. (c) Only the strongest candidates were able to give a response to this question that went beyond IGCSE level physics."
+   },
+   {
+    "q": "s23_41_Q3",
+    "why": "(a) Candidates found it difficult to demonstrate a good understanding of thermal equilibrium. (ii) This calculation proved to be challenging."
+   },
+   {
+    "q": "w22_41_Q2",
+    "why": "(c) (i) This question proved to be challenging."
+   },
+   {
+    "q": "w25_42_Q3",
+    "why": "(iii) Candidates found this question difficult. Many candidates did not appreciate the significance of the information in the question, that the system needs to reach equilibrium before the measurement can be made."
+   },
+   {
+    "q": "m26_42_Q3",
+    "why": "Candidates often omitted one of the terms in the conservation of energy application, usually forgetting that the ice undergoes two stages of warming (one from –18 °C to 0 °C and the other from 0 °C to the final temperature)."
+   }
+  ],
+  "15": [
+   {
+    "q": "w21_41_Q3",
+    "why": "A few candidates confused the symbols and treated n and N as the same quantity. (c) (i) Very few candidates stated the first law of thermodynamics in words although the symbol equation was often given."
+   },
+   {
+    "q": "s21_41_Q2",
+    "why": "(b) This explanation proved to be challenging. (c) (i) Candidates found this calculation difficult."
+   },
+   {
+    "q": "w22_42_Q3",
+    "why": "Common errors were confusion between number of molecules and amount of substance for N, and not being clear that T is thermodynamic temperature. Some of the weaker candidates were unable to make a start because they did not realise that the temperature needed to be converted from °C to K."
+   },
+   {
+    "q": "w24_42_Q4",
+    "why": "A common misconception was that the assumption dealing with the negligible volume of the molecules related to a single molecule rather than to all of the molecules in the gas. Of the candidates that did address the question asked, most observed that there are molecular collisions with the walls of the container, but only the strongest candidates discussed the application of Newton’s laws to those collisions to explain the origin of the force on the walls."
+   },
+   {
+    "q": "m23_42_Q2",
+    "why": "(a) There was much confusion here between the definition of an ideal gas and the assumptions of the kinetic theory. A few candidates omitted the conversion from temperature in degrees Celsius to kelvin."
+   },
+   {
+    "q": "m21_42_Q2",
+    "why": "There was much confusion between the mass of the gas and the mass of a molecule, and also between r.m.s. speed and the mean square speed."
+   },
+   {
+    "q": "s21_42_Q2",
+    "why": "(ii) Many candidates found this question difficult, and often only got as far as calculating the change in kinetic energy of a single molecule."
+   }
+  ],
+  "16": [
+   {
+    "q": "m24_42_Q2",
+    "why": "(a) Many responses were seen that gave the textbook definition of the internal energy of a system in general, but only the strongest candidates then applied this correctly to the ideal gas system that was the subject of the question. Otherwise there were few difficulties, and many candidates obtained the correct final answer."
+   },
+   {
+    "q": "s23_42_Q3",
+    "why": "(ii) Candidates found this question difficult. Only the strongest candidates appreciated that the work done by the gas in stage CD is greater than the work done on the gas in stage AB and that, over a complete cycle, the gas therefore does work that must come from a net input of thermal energy."
+   },
+   {
+    "q": "s23_41_Q4",
+    "why": "(iii) Only the strongest candidates correctly completed this table in full. Many candidates found it difficult to correctly apply the first law of thermodynamics for the three changes."
+   },
+   {
+    "q": "w25_42_Q4",
+    "why": "(b) (i) Only the strongest candidates were able to conclude, when comparing Fig. 4.1 and Fig. 4.2, that the internal energy at each of the stages A, B, C and D is given by U = (3/2)pV. Again, there were some difficulties over the sign of the answer."
+   },
+   {
+    "q": "s25_41_Q4",
+    "why": "(b) Only the strongest candidates obtained full credit for this question, but many candidates earned partial credit for the work done and the increase in internal energy during cooling."
+   },
+   {
+    "q": "w23_41_Q2",
+    "why": "Generally only the strongest candidates recognised that there was the same gain in internal energy and so the same temperature rise."
+   },
+   {
+    "q": "w20_41_Q2",
+    "why": "(c) Completing this table proved to be challenging. Candidates had difficulty in relating the numbers they already knew to this table for the whole cycle of changes."
+   }
+  ],
+  "17": [
+   {
+    "q": "m22_42_Q3",
+    "why": "A common misconception was an incorrect reference to Newton’s Third Law, and an explanation of upwards resultant force as a necessarily equal and opposite response to the downwards push. (c) (i) There were many good definitions of simple harmonic motion, but very few candidates related this to the stated force equation."
+   },
+   {
+    "q": "s21_41_Q3",
+    "why": "A significant number of candidates showed a misconception that the amplitude was constant at all frequencies."
+   },
+   {
+    "q": "s22_41_Q4",
+    "why": "(c) This explanation proved challenging. Only the strongest candidates managed to gain full credit because they realised that ω would decrease leading to a consequent increase in amplitude."
+   },
+   {
+    "q": "w21_41_Q4",
+    "why": "(c) This sketch graph proved to be challenging. Only the strongest candidates drew a closed loop based about (20, 0)."
+   },
+   {
+    "q": "w21_42_Q4",
+    "why": "(ii) This was a more challenging question, and only the strongest candidates realised that the squared nature of the variation of potential energy with displacement (or kinetic energy with velocity) means that the displacement where these quantities have half their maximum value is more than half of the amplitude."
+   },
+   {
+    "q": "s21_42_Q3",
+    "why": "(c) Candidates found this question difficult."
+   },
+   {
+    "q": "w25_44_Q4",
+    "why": "Only the strongest candidates mentioned that kinetic energy + potential energy is constant."
+   }
+  ],
+  "18": [
+   {
+    "q": "w20_41_Q5",
+    "why": "(b) (i) Candidates found determining this charge very challenging."
+   },
+   {
+    "q": "w22_41_Q4",
+    "why": "(c) (i) Candidates found drawing the path of the proton challenging. Some candidates realised that the charge- to-mass ratio was important in this question but very few candidates separated the velocities into their vertical and horizontal components."
+   },
+   {
+    "q": "w22_42_Q5",
+    "why": "Comparatively few candidates appreciated that the negative nature of the potential curve meant that the sign of the charge on the sphere must be negative."
+   },
+   {
+    "q": "w23_41_Q5",
+    "why": "(c) This was the most challenging part of the question and one of the most difficult questions on the question paper."
+   },
+   {
+    "q": "s22_41_Q2",
+    "why": "Candidates found this question challenging as it involved gravitational fields, electric fields and magnetic fields. (a) (i) Candidates found it difficult to determine the correct direction for the magnetic field."
+   },
+   {
+    "q": "m23_42_Q4",
+    "why": "(ii) This multistage calculation proved to be challenging to most candidates. However, only the strongest candidates were able to resolve forces and apply the equilibrium conditions."
+   },
+   {
+    "q": "w25_44_Q5",
+    "why": "(a) Very few candidates distinguished between ‘work done on the charges’ and ‘work done by the charges’. Many candidates stated that the force was repulsive without explaining that this was because the charge on a proton is positive."
+   }
+  ],
+  "19": [
+   {
+    "q": "m23_42_Q5",
+    "why": "Only the strongest candidates were able to correctly determine the resistance of R. (d) Most candidates realised that a straight line from the same initial value of ln Q was required, but only the strongest candidates correctly deduced the quantitative effect of the parallel resistor on the gradient of the line."
+   },
+   {
+    "q": "w21_41_Q6",
+    "why": "The expression for the energy stored was more challenging. (b) These expressions proved to be challenging for candidates."
+   },
+   {
+    "q": "m22_42_Q5",
+    "why": "(ii) Only the very strongest candidates answered this correctly, with most candidates forgetting that energy is proportional to V2 and attempting to apply the general exponential decay equation incorrectly using x as the energy stored."
+   },
+   {
+    "q": "w21_42_Q6",
+    "why": "(c) Most candidates found this to be a challenging question. Only the strongest candidates appreciated that conservation of charge means that the total charge remains the same when distributed across the two spheres."
+   },
+   {
+    "q": "w22_42_Q6",
+    "why": "(a) Candidates found it difficult to demonstrate understanding of why the discharge of a capacitor through a resistor is exponential. Only the strongest candidates were able to give a complete explanation."
+   },
+   {
+    "q": "s21_41_Q7",
+    "why": "A large number of power-of-ten errors were made as candidates found it difficult to convert their value into pF. (c) This was another challenging explanation."
+   },
+   {
+    "q": "s23_42_Q5",
+    "why": "(b) (i) Many candidates found this question difficult. (ii) Many candidates found it difficult to give a coherent answer to this question, with responses often containing unexplained algebra."
+   }
+  ],
+  "20": [
+   {
+    "q": "s25_44_Q6",
+    "why": "Weaker candidates found more difficulty in identifying which side of the coil was being referred to as L in their equation. (iii) Only the strongest candidates were able to sketch the sinusoidal curve without error, despite some allowance being given for a freehand drawing."
+   },
+   {
+    "q": "s25_44_Q7",
+    "why": "(iii) This was one of the more difficult questions on the paper. Only the strongest candidates were able to do so, with many candidates focusing instead on the impact of Lenz’s law and opposing forces."
+   },
+   {
+    "q": "s22_42_Q6",
+    "why": "Weaker candidates found it difficult to articulate some of this, with some suggesting that the wire had to be able to carry current (i.e. be a conductor) or giving information that was already provided in the question stem. The weakest candidates confused the situation with electromagnetic induction and thought the wire had to be moving, or confused carrying a current with the wire being charged."
+   },
+   {
+    "q": "s21_41_Q10",
+    "why": "(b) Candidates found this question difficult. Many candidates did not realise the importance of the current and found it difficult to set out the logical steps needed to explain what is happening."
+   },
+   {
+    "q": "s22_42_Q7",
+    "why": "The most difficult aspect was to realise that the magnitude of the induced e.m.f. in the middle section must be three times the magnitude before t = 0.15 s and after t = 0.25 s. Of those who did realise it would still be upwards, very few candidates were able to give a convincing explanation."
+   },
+   {
+    "q": "m24_42_Q6",
+    "why": "(ii) Very few candidates were able to explain the constancy of flux linkage in terms of the magnetic field having a constant flux density inside the solenoid. The most difficult of the three marking points was the one that required a discussion of how the magnetic fields due to adjacent turns interact with each other to cause a force between the turns."
+   },
+   {
+    "q": "w24_42_Q1",
+    "why": "Confusion with Faraday’s law was common, with many candidates giving responses in terms of the magnitude of the induced e.m.f. (v) This was a difficult question, with only the very strongest candidates demonstrating an ability to use Lenz’s law correctly."
+   }
+  ],
+  "21": [
+   {
+    "q": "w23_41_Q7",
+    "why": "(b) Candidates found some aspects of this sketch difficult."
+   },
+   {
+    "q": "w22_41_Q7",
+    "why": "(ii) The most common misconception here was with the shape of the line drawn. The fact the line was symmetrical about this value was not often known, and candidates who had drawn an incorrect shape of line without the relevant symmetry found it difficult to use their line to answer this question."
+   },
+   {
+    "q": "s23_42_Q7",
+    "why": "(iii) Candidates found this a very challenging question. Whilst many candidates did correctly conclude that the r.m.s. voltages are equal, most found it difficult to adequately articulate the reason why this is the case."
+   },
+   {
+    "q": "s25_41_Q6",
+    "why": "(iii) Most candidates had the correct symbols for four diodes, but only the strongest candidates drew a circuit diagram which would work as a full-wave rectifier, with all of the diodes in the correct orientation."
+   },
+   {
+    "q": "w25_44_Q6",
+    "why": "A significant minority of candidates had incorrect orientations of one or more of the diodes."
+   },
+   {
+    "q": "s24_41_Q7",
+    "why": "(ii) The majority of the candidates found it difficult to appreciate the impact of squaring the voltage to produce the sinusoidal shape of the power–time graph, and they repeated a full-wave rectification graph instead."
+   },
+   {
+    "q": "s22_41_Q5",
+    "why": "(iii) This calculation proved challenging."
+   }
+  ],
+  "22": [
+   {
+    "q": "m22_42_Q8",
+    "why": "(ii) Many candidates realised the wave behaviour of electrons was being shown, but very few added that this was only true for moving electrons. (iii) Only the strongest candidates were able to achieve credit for relating the interatomic spacing in the crystal to the de Broglie wavelength of the electron beam."
+   },
+   {
+    "q": "m23_42_Q7",
+    "why": "(b) Candidates generally struggled with this question. However, only the strongest candidates were able to correctly process the energy change, realising that the sign of the answer must be negative, and that the data requires a 3 significant figure answer."
+   },
+   {
+    "q": "w22_41_Q8",
+    "why": "(c) These two explanations were difficult."
+   },
+   {
+    "q": "w23_41_Q8",
+    "why": "(c) Very few candidates realised that the photons would have greater momentum but there would also be fewer photons per unit time and hence the pressure would be unchanged."
+   },
+   {
+    "q": "m25_42_Q8",
+    "why": "(iii) This was a challenging question."
+   },
+   {
+    "q": "w20_42_Q11",
+    "why": "For candidates who did give responses that answered the question, there was often confusion between photons and electrons (with some candidates discussing the frequency of incident electrons, and others discussing the speed of emitted photons). Only the strongest candidates correctly calculated the threshold frequency."
+   },
+   {
+    "q": "m20_42_Q10",
+    "why": "(c) (i) This question proved to be very challenging."
+   }
+  ],
+  "23": [
+   {
+    "q": "s22_41_Q8",
+    "why": "(ii) Candidates found it difficult to recall and draw the correct line. (ii) Candidates found this explanation challenging."
+   },
+   {
+    "q": "w20_42_Q12",
+    "why": "(b) Candidates found this question difficult, and a large proportion of candidates demonstrated a fundamental confusion between the concepts of nuclide mass and nucleon number. Those candidates who started by considering the variation with nucleon number of binding energy per nucleon were usually able to achieve partial credit, but only the very strongest candidates were able to give a complete answer and achieve full credit."
+   },
+   {
+    "q": "s23_41_Q9",
+    "why": "(c) (i) Very few candidates realised the key point here that the probability of decay of a nucleus per unit time is constant, which is why the decay is random."
+   },
+   {
+    "q": "s23_42_Q9",
+    "why": "(a) The definition of mass defect appears to be not as well known as most definitions, and many candidates did not give a correct answer. (c) (i) This was a challenging question."
+   },
+   {
+    "q": "w21_42_Q12",
+    "why": "(b) (i) Candidates found this to be a challenging question. Candidates that chose to calculate the activities often struggled with the fact that the data was presented as logarithms of activity, and those that used the gradient route (to find decay constant and hence half-life) often had difficulty because the y-axis did not start at the origin."
+   },
+   {
+    "q": "w22_41_Q10",
+    "why": "(iv) Many candidates were unable to take natural logarithms of the exponential decay equation and show that the gradient of the line is –λ. (c) This explanation proved to be challenging."
+   },
+   {
+    "q": "m24_42_Q8",
+    "why": "(iii) This was a challenging question, and many candidates gave responses that were along the right lines but not enough to be awarded credit. A common misconception was that the lack of stability was due to there being more neutrons than protons, overlooking the fact that this is true for the vast majority of stable nuclei (including xenon-132)."
+   }
+  ],
+  "24": [
+   {
+    "q": "w20_42_Q7",
+    "why": "(a) A very common misconception held by candidates was that the electrons arriving at the target anode had a range of different kinetic energies. Only the strongest candidates realised that the spikes are due to excitation and de-excitation of electrons in the target atoms."
+   },
+   {
+    "q": "s23_42_Q10",
+    "why": "(a) (i) Most candidates correctly identified the charged particle as an electron, although a significant minority of weaker candidates confused the whole process of X-ray production with positron emission tomography, and gave the positron as the answer here. (ii) The process of X-ray production by electron bombardment of a metal target was generally well known, although many candidates found it difficult to articulate that the energy of the emitted X-ray photons comes from the kinetic energy of the electrons."
+   },
+   {
+    "q": "m21_42_Q11",
+    "why": "(a) (i) There was often confusion with the explanation for the intensity spikes in the emission spectrum, and many candidates gave explanations of the spikes rather than the continuous spectrum. Of those who answered the question as it was asked, a common misconception was that the electrons arrive at the target anode with different speeds / kinetic energies (despite the fact that they have all been accelerated through the same p.d.)."
+   },
+   {
+    "q": "s22_41_Q9",
+    "why": "(ii) Combining transmitted intensities through more than one medium proved to be challenging."
+   },
+   {
+    "q": "w25_42_Q10",
+    "why": "(ii) Many candidates found this a challenging question and found it difficult to set up the starting equation. Some made the correct start but then had difficulty with the arithmetic."
+   },
+   {
+    "q": "w25_44_Q8",
+    "why": "(a) Candidates found it difficult to give a complete and correct meaning of a tracer. Absorption into the tissue ‘being studied’ or equivalent wording was rarely stated."
+   },
+   {
+    "q": "m20_42_Q4",
+    "why": "(a) (i) Only a minority of candidates were able to explain why ultrasound in scanning is emitted in pulses. The majority of candidates explained how the image is formed rather than how the reflected pulse is detected."
+   }
+  ],
+  "25": [
+   {
+    "q": "s22_41_Q10",
+    "why": "(ii) Some candidates were confused here and thought star B had a smaller wavelength because its maximum intensity peak was lower. (ii) Only the strongest candidates gained credit."
+   },
+   {
+    "q": "w25_41_Q9",
+    "why": "(b) Many candidates wrote at least one answer that, although factually correct, was not a conclusion that could be drawn from the data."
+   },
+   {
+    "q": "m24_42_Q10",
+    "why": "(ii) Most candidates found this a difficult question, but many of the stronger candidates were able to calculate the correct answer."
+   },
+   {
+    "q": "m22_42_Q12",
+    "why": "Some candidates omitted the key word “total” and others confused power with energy or intensity. (c) This calculation was competed well, but a significant minority of candidates used the radiant flux intensity at the Earth in (b) rather than the luminosity of the Sun."
+   },
+   {
+    "q": "w23_42_Q10",
+    "why": "(a) Most candidates knew that Wien’s displacement law involves a wavelength being inversely proportional to a temperature, but only the strongest candidates were able to correctly identify what, in the context of Wien’s law, is meant by wavelength and temperature. (b) (i) This question was generally well answered, although a significant minority of candidates attempted to describe what standard candles are used for rather than stating what one is."
+   },
+   {
+    "q": "s24_42_Q8",
+    "why": "Many candidates struggled to articulate this using the correct technical language, but the more able candidates were usually able to achieve at least partial credit. Only the strongest candidates appreciated how the photon energy needs to be combined with the –3.40 eV energy level to get to the answer of –0.85 eV."
+   },
+   {
+    "q": "s22_42_Q9",
+    "why": "Many candidates described decreased wavelengths or even wavelengths that are continuously increasing. Many confused the Universe with the stars being observed and tried to suggest that the Universe is moving away from the Earth, or suggested that the observation gives evidence that stars are moving away from each other."
+   }
+  ]
+ },
+ "topics": {
+  "m20_42_Q1": [
+   13,
+   12
+  ],
+  "m20_42_Q2": [
+   15
+  ],
+  "m20_42_Q3": [
+   17
+  ],
+  "m20_42_Q4": [
+   24
+  ],
+  "m20_42_Q5": "out of syllabus",
+  "m20_42_Q6": [
+   18
+  ],
+  "m20_42_Q7": "out of syllabus",
+  "m20_42_Q8": [
+   20
+  ],
+  "m20_42_Q9": [
+   21
+  ],
+  "m20_42_Q10": [
+   22
+  ],
+  "m20_42_Q11": [
+   24,
+   22
+  ],
+  "m20_42_Q12": [
+   23
+  ],
+  "s20_41_Q1": [
+   13,
+   12
+  ],
+  "s20_41_Q2": [
+   16
+  ],
+  "s20_41_Q3": [
+   17
+  ],
+  "s20_41_Q4": [
+   24
+  ],
+  "s20_41_Q5": [
+   18,
+   13
+  ],
+  "s20_41_Q6": "out of syllabus",
+  "s20_41_Q7": "out of syllabus",
+  "s20_41_Q8": [
+   20
+  ],
+  "s20_41_Q9": [
+   20
+  ],
+  "s20_41_Q10": [
+   22
+  ],
+  "s20_41_Q11": [
+   22
+  ],
+  "s20_41_Q12": [
+   23
+  ],
+  "s20_42_Q1": [
+   13
+  ],
+  "s20_42_Q2": [
+   15
+  ],
+  "s20_42_Q3": [
+   16
+  ],
+  "s20_42_Q4": [
+   17
+  ],
+  "s20_42_Q5": [
+   24
+  ],
+  "s20_42_Q6": "out of syllabus",
+  "s20_42_Q7": [
+   18
+  ],
+  "s20_42_Q8": "out of syllabus",
+  "s20_42_Q9": [
+   20
+  ],
+  "s20_42_Q10": [
+   20
+  ],
+  "s20_42_Q11": "out of syllabus",
+  "s20_42_Q12": [
+   23
+  ],
+  "w20_41_Q1": [
+   13
+  ],
+  "w20_41_Q2": [
+   16
+  ],
+  "w20_41_Q3": [
+   17
+  ],
+  "w20_41_Q4": [
+   24
+  ],
+  "w20_41_Q5": [
+   18
+  ],
+  "w20_41_Q6": [
+   19
+  ],
+  "w20_41_Q7": "out of syllabus",
+  "w20_41_Q8": [
+   20
+  ],
+  "w20_41_Q9": [
+   20
+  ],
+  "w20_41_Q10": [
+   24
+  ],
+  "w20_41_Q11": [
+   22
+  ],
+  "w20_41_Q12": [
+   23
+  ],
+  "w20_42_Q1": [
+   13
+  ],
+  "w20_42_Q2": [
+   16,
+   15
+  ],
+  "w20_42_Q3": [
+   17
+  ],
+  "w20_42_Q4": "out of syllabus",
+  "w20_42_Q5": [
+   18,
+   13
+  ],
+  "w20_42_Q6": [
+   19
+  ],
+  "w20_42_Q7": [
+   24
+  ],
+  "w20_42_Q8": "out of syllabus",
+  "w20_42_Q9": [
+   20
+  ],
+  "w20_42_Q10": [
+   20
+  ],
+  "w20_42_Q11": [
+   22
+  ],
+  "w20_42_Q12": [
+   23
+  ],
+  "m21_42_Q1": [
+   13
+  ],
+  "m21_42_Q2": [
+   15
+  ],
+  "m21_42_Q3": [
+   14
+  ],
+  "m21_42_Q4": [
+   17
+  ],
+  "m21_42_Q5": "out of syllabus",
+  "m21_42_Q6": [
+   18,
+   13
+  ],
+  "m21_42_Q7": "out of syllabus",
+  "m21_42_Q8": "out of syllabus",
+  "m21_42_Q9": [
+   20
+  ],
+  "m21_42_Q10": [
+   21
+  ],
+  "m21_42_Q11": [
+   24
+  ],
+  "m21_42_Q12": [
+   23
+  ],
+  "s21_41_Q1": [
+   13,
+   12
+  ],
+  "s21_41_Q2": [
+   15,
+   16
+  ],
+  "s21_41_Q3": [
+   17
+  ],
+  "s21_41_Q4": [
+   24
+  ],
+  "s21_41_Q5": "out of syllabus",
+  "s21_41_Q6": [
+   18
+  ],
+  "s21_41_Q7": [
+   19
+  ],
+  "s21_41_Q8": "out of syllabus",
+  "s21_41_Q9": [
+   20
+  ],
+  "s21_41_Q10": [
+   20
+  ],
+  "s21_41_Q11": [
+   24
+  ],
+  "s21_41_Q12": [
+   22
+  ],
+  "s21_42_Q1": [
+   13
+  ],
+  "s21_42_Q2": [
+   15,
+   16
+  ],
+  "s21_42_Q3": [
+   17
+  ],
+  "s21_42_Q4": "out of syllabus",
+  "s21_42_Q5": [
+   18,
+   22,
+   23
+  ],
+  "s21_42_Q6": [
+   19
+  ],
+  "s21_42_Q7": "out of syllabus",
+  "s21_42_Q8": [
+   20
+  ],
+  "s21_42_Q9": [
+   20
+  ],
+  "s21_42_Q10": [
+   21
+  ],
+  "s21_42_Q11": [
+   24
+  ],
+  "s21_42_Q12": [
+   22
+  ],
+  "w21_41_Q1": [
+   12
+  ],
+  "w21_41_Q2": [
+   13
+  ],
+  "w21_41_Q3": [
+   15,
+   14
+  ],
+  "w21_41_Q4": [
+   17
+  ],
+  "w21_41_Q5": "out of syllabus",
+  "w21_41_Q6": [
+   19
+  ],
+  "w21_41_Q7": "out of syllabus",
+  "w21_41_Q8": [
+   20
+  ],
+  "w21_41_Q9": [
+   21
+  ],
+  "w21_41_Q10": [
+   22
+  ],
+  "w21_41_Q11": [
+   24
+  ],
+  "w21_41_Q12": [
+   23
+  ],
+  "w21_42_Q1": [
+   12
+  ],
+  "w21_42_Q2": [
+   13
+  ],
+  "w21_42_Q3": [
+   15
+  ],
+  "w21_42_Q4": [
+   17
+  ],
+  "w21_42_Q5": "out of syllabus",
+  "w21_42_Q6": [
+   18,
+   19
+  ],
+  "w21_42_Q7": "out of syllabus",
+  "w21_42_Q8": [
+   20
+  ],
+  "w21_42_Q9": [
+   22
+  ],
+  "w21_42_Q10": "out of syllabus",
+  "w21_42_Q11": [
+   24
+  ],
+  "w21_42_Q12": [
+   23
+  ],
+  "m22_42_Q1": [
+   13
+  ],
+  "m22_42_Q2": [
+   16
+  ],
+  "m22_42_Q3": [
+   17
+  ],
+  "m22_42_Q4": [
+   18
+  ],
+  "m22_42_Q5": [
+   19
+  ],
+  "m22_42_Q6": [
+   20
+  ],
+  "m22_42_Q7": [
+   21
+  ],
+  "m22_42_Q8": [
+   22
+  ],
+  "m22_42_Q9": [
+   23
+  ],
+  "m22_42_Q10": [
+   24
+  ],
+  "m22_42_Q11": [
+   24
+  ],
+  "m22_42_Q12": [
+   25
+  ],
+  "s22_41_Q1": [
+   13
+  ],
+  "s22_41_Q2": [
+   18
+  ],
+  "s22_41_Q3": [
+   16
+  ],
+  "s22_41_Q4": [
+   17
+  ],
+  "s22_41_Q5": [
+   21
+  ],
+  "s22_41_Q6": [
+   20
+  ],
+  "s22_41_Q7": [
+   22
+  ],
+  "s22_41_Q8": [
+   23
+  ],
+  "s22_41_Q9": [
+   24
+  ],
+  "s22_41_Q10": [
+   25
+  ],
+  "s22_42_Q1": [
+   13
+  ],
+  "s22_42_Q2": [
+   18
+  ],
+  "s22_42_Q3": [
+   14
+  ],
+  "s22_42_Q4": [
+   17
+  ],
+  "s22_42_Q5": [
+   19
+  ],
+  "s22_42_Q6": [
+   20
+  ],
+  "s22_42_Q7": [
+   20
+  ],
+  "s22_42_Q8": [
+   22
+  ],
+  "s22_42_Q9": [
+   25
+  ],
+  "s22_42_Q10": [
+   23
+  ],
+  "w22_41_Q1": [
+   13
+  ],
+  "w22_41_Q2": [
+   14
+  ],
+  "w22_41_Q3": [
+   17
+  ],
+  "w22_41_Q4": [
+   18
+  ],
+  "w22_41_Q5": [
+   19
+  ],
+  "w22_41_Q6": [
+   20
+  ],
+  "w22_41_Q7": [
+   21
+  ],
+  "w22_41_Q8": [
+   22
+  ],
+  "w22_41_Q9": [
+   25
+  ],
+  "w22_41_Q10": [
+   23
+  ],
+  "w22_42_Q1": [
+   13
+  ],
+  "w22_42_Q2": [
+   14
+  ],
+  "w22_42_Q3": [
+   15
+  ],
+  "w22_42_Q4": [
+   17
+  ],
+  "w22_42_Q5": [
+   18
+  ],
+  "w22_42_Q6": [
+   19
+  ],
+  "w22_42_Q7": [
+   20
+  ],
+  "w22_42_Q8": [
+   20
+  ],
+  "w22_42_Q9": [
+   22
+  ],
+  "w22_42_Q10": [
+   24
+  ],
+  "m23_42_Q1": [
+   13
+  ],
+  "m23_42_Q2": [
+   15
+  ],
+  "m23_42_Q3": [
+   17
+  ],
+  "m23_42_Q4": [
+   18
+  ],
+  "m23_42_Q5": [
+   19
+  ],
+  "m23_42_Q6": [
+   20
+  ],
+  "m23_42_Q7": [
+   22
+  ],
+  "m23_42_Q8": [
+   23
+  ],
+  "m23_42_Q9": [
+   24
+  ],
+  "m23_42_Q10": [
+   25
+  ],
+  "s23_41_Q1": [
+   18,
+   13
+  ],
+  "s23_41_Q2": [
+   12
+  ],
+  "s23_41_Q3": [
+   14
+  ],
+  "s23_41_Q4": [
+   15,
+   16
+  ],
+  "s23_41_Q5": [
+   21
+  ],
+  "s23_41_Q6": [
+   20
+  ],
+  "s23_41_Q7": [
+   22
+  ],
+  "s23_41_Q8": [
+   24
+  ],
+  "s23_41_Q9": [
+   23
+  ],
+  "s23_41_Q10": [
+   25
+  ],
+  "s23_42_Q1": [
+   13
+  ],
+  "s23_42_Q2": [
+   15
+  ],
+  "s23_42_Q3": [
+   16
+  ],
+  "s23_42_Q4": [
+   17
+  ],
+  "s23_42_Q5": [
+   19
+  ],
+  "s23_42_Q6": [
+   20
+  ],
+  "s23_42_Q7": [
+   21
+  ],
+  "s23_42_Q8": [
+   22
+  ],
+  "s23_42_Q9": [
+   23
+  ],
+  "s23_42_Q10": [
+   24
+  ],
+  "w23_41_Q1": [
+   13
+  ],
+  "w23_41_Q2": [
+   16
+  ],
+  "w23_41_Q3": [
+   15
+  ],
+  "w23_41_Q4": [
+   17
+  ],
+  "w23_41_Q5": [
+   18
+  ],
+  "w23_41_Q6": [
+   20
+  ],
+  "w23_41_Q7": [
+   21
+  ],
+  "w23_41_Q8": [
+   22
+  ],
+  "w23_41_Q9": [
+   23
+  ],
+  "w23_41_Q10": [
+   24
+  ],
+  "w23_42_Q1": [
+   12
+  ],
+  "w23_42_Q2": [
+   13
+  ],
+  "w23_42_Q3": [
+   16
+  ],
+  "w23_42_Q4": [
+   17
+  ],
+  "w23_42_Q5": [
+   18
+  ],
+  "w23_42_Q6": [
+   19
+  ],
+  "w23_42_Q7": [
+   20
+  ],
+  "w23_42_Q8": [
+   22
+  ],
+  "w23_42_Q9": [
+   24,
+   23
+  ],
+  "w23_42_Q10": [
+   25
+  ],
+  "m24_42_Q1": [
+   13
+  ],
+  "m24_42_Q2": [
+   16
+  ],
+  "m24_42_Q3": [
+   17
+  ],
+  "m24_42_Q4": [
+   19
+  ],
+  "m24_42_Q5": [
+   20,
+   12
+  ],
+  "m24_42_Q6": [
+   20
+  ],
+  "m24_42_Q7": [
+   22
+  ],
+  "m24_42_Q8": [
+   23
+  ],
+  "m24_42_Q9": [
+   24
+  ],
+  "m24_42_Q10": [
+   25
+  ],
+  "s24_41_Q1": [
+   13
+  ],
+  "s24_41_Q2": [
+   14
+  ],
+  "s24_41_Q3": [
+   15
+  ],
+  "s24_41_Q4": [
+   17
+  ],
+  "s24_41_Q5": [
+   18
+  ],
+  "s24_41_Q6": [
+   19
+  ],
+  "s24_41_Q7": [
+   21
+  ],
+  "s24_41_Q8": [
+   24,
+   22
+  ],
+  "s24_41_Q9": [
+   23
+  ],
+  "s24_41_Q10": [
+   25
+  ],
+  "s24_42_Q1": [
+   12
+  ],
+  "s24_42_Q2": [
+   15
+  ],
+  "s24_42_Q3": [
+   16
+  ],
+  "s24_42_Q4": [
+   17
+  ],
+  "s24_42_Q5": [
+   18
+  ],
+  "s24_42_Q6": [
+   19
+  ],
+  "s24_42_Q7": [
+   20
+  ],
+  "s24_42_Q8": [
+   25,
+   22
+  ],
+  "s24_42_Q9": [
+   23
+  ],
+  "s24_42_Q10": [
+   24
+  ],
+  "w24_41_Q1": [
+   13
+  ],
+  "w24_41_Q2": [
+   14
+  ],
+  "w24_41_Q3": [
+   15
+  ],
+  "w24_41_Q4": [
+   17
+  ],
+  "w24_41_Q5": [
+   18
+  ],
+  "w24_41_Q6": [
+   21
+  ],
+  "w24_41_Q7": [
+   20
+  ],
+  "w24_41_Q8": [
+   22
+  ],
+  "w24_41_Q9": [
+   23
+  ],
+  "w24_41_Q10": [
+   25
+  ],
+  "w24_42_Q1": [
+   20,
+   12
+  ],
+  "w24_42_Q2": [
+   13
+  ],
+  "w24_42_Q3": [
+   14
+  ],
+  "w24_42_Q4": [
+   15
+  ],
+  "w24_42_Q5": [
+   17
+  ],
+  "w24_42_Q6": [
+   18
+  ],
+  "w24_42_Q7": [
+   19
+  ],
+  "w24_42_Q8": [
+   21
+  ],
+  "w24_42_Q9": [
+   22
+  ],
+  "w24_42_Q10": [
+   23
+  ],
+  "m25_42_Q1": [
+   12
+  ],
+  "m25_42_Q2": [
+   13
+  ],
+  "m25_42_Q3": [
+   14,
+   15
+  ],
+  "m25_42_Q4": [
+   17
+  ],
+  "m25_42_Q5": [
+   19
+  ],
+  "m25_42_Q6": [
+   20
+  ],
+  "m25_42_Q7": [
+   20
+  ],
+  "m25_42_Q8": [
+   22
+  ],
+  "m25_42_Q9": [
+   23
+  ],
+  "m25_42_Q10": [
+   25
+  ],
+  "s25_41_Q1": [
+   13
+  ],
+  "s25_41_Q2": [
+   18
+  ],
+  "s25_41_Q3": [
+   14
+  ],
+  "s25_41_Q4": [
+   16
+  ],
+  "s25_41_Q5": [
+   17
+  ],
+  "s25_41_Q6": [
+   21
+  ],
+  "s25_41_Q7": [
+   20
+  ],
+  "s25_41_Q8": [
+   22
+  ],
+  "s25_41_Q9": [
+   23
+  ],
+  "s25_41_Q10": [
+   25
+  ],
+  "s25_42_Q1": [
+   12
+  ],
+  "s25_42_Q2": [
+   13
+  ],
+  "s25_42_Q3": [
+   16
+  ],
+  "s25_42_Q4": [
+   15
+  ],
+  "s25_42_Q5": [
+   17
+  ],
+  "s25_42_Q6": [
+   18
+  ],
+  "s25_42_Q7": [
+   19
+  ],
+  "s25_42_Q8": [
+   21
+  ],
+  "s25_42_Q9": [
+   22
+  ],
+  "s25_42_Q10": [
+   23
+  ],
+  "s25_44_Q1": [
+   13
+  ],
+  "s25_44_Q2": [
+   14
+  ],
+  "s25_44_Q3": [
+   15
+  ],
+  "s25_44_Q4": [
+   17
+  ],
+  "s25_44_Q5": [
+   18
+  ],
+  "s25_44_Q6": [
+   20
+  ],
+  "s25_44_Q7": [
+   20
+  ],
+  "s25_44_Q8": [
+   21
+  ],
+  "s25_44_Q9": [
+   22
+  ],
+  "s25_44_Q10": [
+   24
+  ],
+  "s25_44_Q11": [
+   23
+  ],
+  "w25_41_Q1": [
+   12
+  ],
+  "w25_41_Q2": [
+   16
+  ],
+  "w25_41_Q3": [
+   13
+  ],
+  "w25_41_Q4": [
+   15
+  ],
+  "w25_41_Q5": [
+   18
+  ],
+  "w25_41_Q6": [
+   19
+  ],
+  "w25_41_Q7": [
+   20
+  ],
+  "w25_41_Q8": [
+   23
+  ],
+  "w25_41_Q9": [
+   25
+  ],
+  "w25_41_Q10": [
+   24
+  ],
+  "w25_42_Q1": [
+   12
+  ],
+  "w25_42_Q2": [
+   15
+  ],
+  "w25_42_Q3": [
+   14
+  ],
+  "w25_42_Q4": [
+   16
+  ],
+  "w25_42_Q5": [
+   17
+  ],
+  "w25_42_Q6": [
+   18
+  ],
+  "w25_42_Q7": [
+   21
+  ],
+  "w25_42_Q8": [
+   22
+  ],
+  "w25_42_Q9": [
+   23
+  ],
+  "w25_42_Q10": [
+   24
+  ],
+  "w25_44_Q1": [
+   13
+  ],
+  "w25_44_Q2": [
+   15
+  ],
+  "w25_44_Q3": [
+   16
+  ],
+  "w25_44_Q4": [
+   17
+  ],
+  "w25_44_Q5": [
+   18
+  ],
+  "w25_44_Q6": [
+   21
+  ],
+  "w25_44_Q7": [
+   20
+  ],
+  "w25_44_Q8": [
+   24
+  ],
+  "w25_44_Q9": [
+   22
+  ],
+  "w25_44_Q10": [
+   25
+  ],
+  "m26_42_Q1": [
+   12
+  ],
+  "m26_42_Q2": [
+   18
+  ],
+  "m26_42_Q3": [
+   14
+  ],
+  "m26_42_Q4": [
+   16
+  ],
+  "m26_42_Q5": [
+   15
+  ],
+  "m26_42_Q6": [
+   17
+  ],
+  "m26_42_Q7": [
+   21
+  ],
+  "m26_42_Q8": [
+   25
+  ],
+  "m26_42_Q9": [
+   23
+  ],
+  "m26_42_Q10": [
+   24
+  ],
+  "s26_41_Q1": [
+   13
+  ],
+  "s26_41_Q2": [
+   15
+  ],
+  "s26_41_Q3": [
+   16
+  ],
+  "s26_41_Q4": [
+   18
+  ],
+  "s26_41_Q5": [
+   19
+  ],
+  "s26_41_Q6": [
+   20
+  ],
+  "s26_41_Q7": [
+   21
+  ],
+  "s26_41_Q8": [
+   24
+  ],
+  "s26_41_Q9": [
+   23
+  ],
+  "s26_41_Q10": [
+   25
+  ],
+  "s26_42_Q1": [
+   12
+  ],
+  "s26_42_Q2": [
+   13
+  ],
+  "s26_42_Q3": [
+   16
+  ],
+  "s26_42_Q4": [
+   15
+  ],
+  "s26_42_Q5": [
+   17
+  ],
+  "s26_42_Q6": [
+   18
+  ],
+  "s26_42_Q7": [
+   20
+  ],
+  "s26_42_Q8": [
+   21
+  ],
+  "s26_42_Q9": [
+   22
+  ],
+  "s26_42_Q10": [
+   23
+  ],
+  "s26_44_Q1": [
+   18
+  ],
+  "s26_44_Q2": [
+   13
+  ],
+  "s26_44_Q3": [
+   14
+  ],
+  "s26_44_Q4": [
+   16
+  ],
+  "s26_44_Q5": [
+   17
+  ],
+  "s26_44_Q6": [
+   19
+  ],
+  "s26_44_Q7": [
+   20
+  ],
+  "s26_44_Q8": [
+   22
+  ],
+  "s26_44_Q9": [
+   24
+  ],
+  "s26_44_Q10": [
+   25
+  ]
+ }
+}
