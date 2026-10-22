@@ -118,18 +118,22 @@ def rect(c, x, y, w, h, lw=0.75, fill=None):
 
 
 def hatch(c, x, y, w, h, spacing=4, angle=45, lw=0.5):
-    """Hatched rectangle (no outline), e.g. a wall, ceiling or the ground."""
+    """Hatched rectangle (no outline), e.g. a wall, ceiling or the ground.
+    The lines sit on a fixed grid, so hatched strips that touch join up
+    without a seam."""
     c.saveState()
     p = c.beginPath()
     p.rect(x, y, w, h)
     c.clipPath(p, stroke=0, fill=0)
     c.setLineWidth(lw)
     t = math.tan(math.radians(angle))
-    span = w + h / max(t, 1e-6)
-    k = -h / max(t, 1e-6)
-    while k < span:
-        c.line(x + k, y, x + k + h / max(t, 1e-6), y + h)
-        k += spacing / math.sin(math.radians(angle))
+    step = spacing / math.sin(math.radians(angle))
+    # lines are X = k*step + Y/t; cover every line that crosses the box
+    k0 = math.floor((x - (y + h) / t) / step) - 1
+    k1 = math.ceil((x + w - y / t) / step) + 1
+    for k in range(k0, k1 + 1):
+        x_at_y = k * step + y / t
+        c.line(x_at_y, y, x_at_y + h / t, y + h)
     c.restoreState()
 
 

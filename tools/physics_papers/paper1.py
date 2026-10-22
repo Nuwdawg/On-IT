@@ -5,7 +5,6 @@ using the Data values printed on the real papers (g = 9.81 m s-2,
 e = 1.60e-19 C, h = 6.63e-34 J s, 1/4πε0 = 8.99e9 m F-1, ...).
 """
 import math
-import re
 
 from engine import *
 from figs import *
@@ -223,8 +222,9 @@ def fig_5_1(c):
 
 
 def fig_5_2(c):
-    g = Graph(c, 50, 12, 60 * MINOR, 30 * MINOR, xr=(0, 1.2), yr=(-6, 6), xmajor=0.1, ymajor=2,
-              xticks=[(0.2 * k, '%.1f' % (0.2 * k)) for k in range(1, 7)],
+    g = Graph(c, 50, 30, 60 * MINOR, 30 * MINOR, xr=(0, 1.2), yr=(-6, 6), xmajor=0.1, ymajor=2,
+              labels_outside=True,
+              xticks=[(0.2 * k, '%.1f' % (0.2 * k)) for k in range(0, 7)],
               yticks=[(v, str(v).replace('-', '–')) for v in range(-6, 7, 2)],
               xlabel='<i>t</i> / s', ylabel='<i>x</i> / cm')
     g.curve(lambda t: 4.0 * math.cos(2 * math.pi * (t - 0.3) / 0.8), 0, 1.2, n=400, w=1.1)
@@ -543,7 +543,7 @@ Q3 = Question([
         ]),
         Sub('ii', [
             Text('Determine the ratio'),
-            Eq(Frac('r.m.s. speed of the molecules in A', 'r.m.s. speed of the molecules in B'), '.'),
+            Eq(Frac('r.m.s. speed of the molecules in A', 'r.m.s. speed of the molecules in B')),
             Space(6),
             Answer('ratio', '', 2),
         ]),
@@ -607,7 +607,7 @@ Q5 = Question([
         Text('The block is displaced vertically and released. It oscillates with simple harmonic motion. '
              'Fig. 5.2 shows part of the variation with time <i>t</i> of the displacement <i>x</i> of the block '
              'from its equilibrium position.'),
-        Fig(416, 195, fig_5_2, 'Fig. 5.2'),
+        Fig(416, 213, fig_5_2, 'Fig. 5.2'),
         Sub('i', [
             Text('Use Fig. 5.2 to determine the maximum speed of the block.'),
             Space(8),
@@ -673,8 +673,7 @@ Q6 = Question([
             Text('A student states that, because sphere X has a greater charge than sphere Y, the electric field '
                  'strength at the surface of X is greater than that at the surface of Y.'),
             Text('Determine the ratio'),
-            Eq(Frac('electric field strength at the surface of Y', 'electric field strength at the surface of X'),
-               '.'),
+            Eq(Frac('electric field strength at the surface of Y', 'electric field strength at the surface of X')),
             Space(6),
             Answer('ratio', '', 2),
         ]),
@@ -801,19 +800,19 @@ Q9 = Question([
              'A student states that, because they gain the same kinetic energy, they have the same de Broglie '
              'wavelength.'),
         Text('Determine the ratio'),
-        Eq(Frac('de Broglie wavelength of the electron', 'de Broglie wavelength of the proton'), '.'),
+        Eq(Frac('de Broglie wavelength of the electron', 'de Broglie wavelength of the proton')),
         Space(6),
         Answer('ratio', '', 2),
     ]),
     Part('e', [
         Text('A deuterium nucleus and a tritium nucleus fuse according to the equation'),
-        Eq('<sup>2</sup><sub>1</sub>H  +  <sup>3</sup><sub>1</sub>H  →  <sup>4</sup><sub>2</sub>He  +  '
-           '<sup>1</sup><sub>0</sub>n'),
+        Eq('<nuc a="2" z="1"/>H  +  <nuc a="3" z="1"/>H  →  <nuc a="4" z="2"/>He  +  '
+           '<nuc a="1" z="0"/>n'),
         Text('Data for the binding energy per nucleon of the nuclei are given in Table 9.1.'),
         Table([['nucleus', 'binding energy per nucleon / MeV'],
-               ['<sup>2</sup><sub>1</sub>H', '1.11'],
-               ['<sup>3</sup><sub>1</sub>H', '2.83'],
-               ['<sup>4</sup><sub>2</sub>He', '7.07']],
+               ['<nuc a="2" z="1"/>H', '1.11'],
+               ['<nuc a="3" z="1"/>H', '2.83'],
+               ['<nuc a="4" z="2"/>He', '7.07']],
               [110, 230], 'Table 9.1'),
         Text('Determine the energy released, in MeV, in this reaction.'),
         Space(7),
@@ -1158,17 +1157,5 @@ MS = [
     ], note='<i>t</i> = <i>d</i> / <i>v</i> = 1 / <i>H</i><sub>0</sub>, so any galaxy that obeys Hubble’s law '
             'gives the same estimate.'),
 ]
-
-def _tie_refs(blocks):
-    """Keep 'Fig. 1.1' and 'Table 4.1' together on one line."""
-    for b in blocks:
-        if isinstance(b, (Part, Sub)):
-            _tie_refs(b.blocks)
-        elif isinstance(b, Text):
-            b.rich = re.sub(r'(Fig\.|Table) (\d)', '\\1\u00a0\\2', b.rich)
-
-
-for _q in (Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10):
-    _tie_refs(_q.blocks)
 
 PAPER = Paper(number=1, questions=[Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10], mark_scheme=MS)

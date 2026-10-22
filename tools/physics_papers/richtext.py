@@ -28,7 +28,7 @@ for _name, _path in _FONTS.items():
         pdfmetrics.registerFont(TTFont(_name, _path))
 _ARIAL_CMAP = pdfmetrics.getFont('Arial').face.charToGlyph
 # characters Liberation Sans maps but draws as an empty box
-_FORCE_SYM = set('∝⇌')
+_FORCE_SYM = set('∝⇌→')    # → is also too small in Liberation Sans
 
 SUP_SIZE = 8.0     # superscripts and subscripts in 11 pt text
 SUP_RISE = 3.85

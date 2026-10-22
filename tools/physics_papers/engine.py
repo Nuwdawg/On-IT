@@ -158,9 +158,17 @@ class Item:
             f(c, top)
 
 
+_PART_REF = re.compile(r'(?<![>\w(])(\d{0,2}\([a-h]\)(?:\((?:i|ii|iii|iv|v|vi)\))?)(?![\w<])')
+
+
+def bold_refs(rich):
+    """Cambridge prints references to other parts, e.g. (b)(ii) or 6(a), in bold."""
+    return _PART_REF.sub(r'<b>\1</b>', rich)
+
+
 def _text_item(b, x, label):
     maxw = RIGHT - x
-    lines = wrap(b.rich, maxw)
+    lines = wrap(bold_refs(b.rich), maxw)
 
     def draw(c, top):
         for k, (words, last) in enumerate(lines):
