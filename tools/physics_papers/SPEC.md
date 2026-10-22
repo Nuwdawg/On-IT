@@ -72,6 +72,8 @@ mark scheme.
 - Bold for **not**, **all**, **two** etc. where Cambridge would bold them:
   `<b>not</b>`.
 - Refer to figures as `Fig. 3.1` and tables as `Table 3.1` (question.number).
+- Nuclides: `<nuc a="235" z="92"/>U` gives the stacked mass and proton
+  numbers in front of the symbol, as Cambridge prints them.
 - Part labels: questions have parts (a), (b), (c)... and sub-parts (i), (ii)...
 
 ## Content classes (import with `from engine import *`)
@@ -112,7 +114,7 @@ Blocks (all can appear at question, part or sub-part level):
 | Block | Meaning |
 |---|---|
 | `Text(rich, align='justify')` | Paragraph. `align` may be `'left'` or `'center'`. Successive Text blocks get a blank line between them (Cambridge style). Use `Text(a + '<br/>' + b)` for lines with no gap. |
-| `Lines(n, marks)` | n dotted answer lines; last ends with `[marks]`. Convention: marks + 1 lines for explanations (1 mark → 2 lines, 2 → 3, 3 → 4). |
+| `Lines(n, marks)` | n dotted answer lines; last ends with `[marks]` (`marks=None` for unmarked lines, e.g. before an `Answer`). Convention: marks + 1 lines for explanations (1 mark → 2 lines, 2 → 3, 3 → 4). |
 | `Space(n)` | n × 13 pt blank working space. Calculations: [1] 6, [2] 8, [3] 10, [4] 12. |
 | `Answer(label, unit, marks)` | `label = ........ unit [marks]` right-aligned. `marks=None` for an earlier line of a multi-answer part (only the last carries the marks). `label` is rich text, e.g. `'<i>C</i>'`; unit may be `''`. |
 | `Mark(n)` | Lone `[n]` at the right margin (show-that, drawing on a figure). |
@@ -164,11 +166,19 @@ wire(c, pts)                                 # polyline of wire
 g = Graph(c, x, y, w, h, xr=(0, 12), yr=(0, 8),
           xmajor=4, ymajor=4, minor=5,           # minor = subdivisions per major
           grid=True, xlabel='<i>V</i><sub>C</sub> / V', ylabel='<i>Q</i> / mC',
-          xticks=None, yticks=None)              # None = label every major line
+          xticks=None, yticks=None,              # None = label every major line, else
+                                                 # a list of (value, 'label') tuples
+          axes=True,                             # False: draw your own axes
+          xlabel_pos='right', ylabel_pos='side', # or 'center' / 'top'
+          labels_outside=False)                  # True: tick labels along the grid's
+                                                 # bottom and left edges, not on the axes
 g.P(xv, yv) -> (px, py)                          # data to figure coordinates
 g.curve(f, x0, x1, n=200, w=1)                   # plot y = f(x)
 g.points(list_of_xy, w=1)                        # straight segments through points
 g.mark(xv, yv, style='x')                        # plotted point (cross) or 'dot'
+g.line(x1, y1, x2, y2, w=1.0, dash=None)         # straight line in data coordinates
+g.text(xv, yv, s, anchor='l', dx=0, dy=0)        # label at a data point
+label(c, x, y, s, anchor='l')                    # text on a white knock-out box
 g.finish()                                       # redraw tick and axis labels on top of plotted lines
 ```
 
@@ -216,6 +226,9 @@ layout and the figures. Only touch your own paper module: `engine.py`,
 them).
 
 Layout notes:
+- A Text right after a figure that names it (`On Fig. 5.2, sketch ...`)
+  is kept on the same page as the figure.
+- An all-negative y range puts the x-axis along the top with its labels above.
 - Numbers and units are tied automatically (`17 m s<sup>–1</sup>` never
   breaks across lines), so write units with ordinary spaces.
 - A page holds about 700 pt of content between the page number and the

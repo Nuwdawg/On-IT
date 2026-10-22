@@ -298,12 +298,13 @@ class Graph:
 
     def __init__(self, c, x, y, w, h, xr=(0, 10), yr=(0, 10), xmajor=1, ymajor=1, minor=5,
                  grid=True, xlabel='', ylabel='', xticks=None, yticks=None, axes=True,
-                 xlabel_pos='right', ylabel_pos='side'):
+                 xlabel_pos='right', ylabel_pos='side', labels_outside=False):
         self.c, self.x, self.y, self.w, self.h = c, x, y, w, h
         self.xr, self.yr = xr, yr
         self._labels = []
         if grid:
             self._grid(xmajor, ymajor, minor)
+        self.labels_outside = labels_outside
         if axes:
             self._axes(xmajor, ymajor, xticks, yticks, xlabel, ylabel, xlabel_pos, ylabel_pos)
 
@@ -337,8 +338,8 @@ class Graph:
 
     def _axes(self, xmajor, ymajor, xticks, yticks, xlabel, ylabel, xlabel_pos, ylabel_pos):
         c = self.c
-        y0 = 0 if self.yr[0] < 0 < self.yr[1] else self.yr[0]
-        x0 = 0 if self.xr[0] < 0 < self.xr[1] else self.xr[0]
+        y0 = 0 if self.yr[0] <= 0 <= self.yr[1] else self.yr[0]
+        x0 = 0 if self.xr[0] <= 0 <= self.xr[1] else self.xr[0]
         ax_y = self.P(0, y0)[1]
         ax_x = self.P(x0, 0)[0]
         line(c, self.x, ax_y, self.x + self.w, ax_y, w=1.0)
@@ -346,27 +347,37 @@ class Graph:
         xt = xticks if xticks is not None else self._ticks(self.xr[0], self.xr[1], xmajor)
         yt = yticks if yticks is not None else self._ticks(self.yr[0], self.yr[1], ymajor)
         label = self._label
+        top = ax_y >= self.y + self.h - 1        # x-axis along the top edge (all-negative y)
         tx = 3 if ax_y > self.y + 1 else 0       # ticks cross an axis inside the grid
         ty = 3 if ax_x > self.x + 1 else 0
+        # where the tick labels go: beside the axis, or outside the grid
+        if top:
+            lx_y, xl_y = ax_y + 5, ax_y + 19
+        elif self.labels_outside:
+            lx_y, xl_y = self.y - 13, self.y - 27
+        else:
+            lx_y, xl_y = ax_y - 13, ax_y - 27
+        ly_x = self.x - 5 if self.labels_outside else ax_x - 5
         for v, s in xt:
             px = self.P(v, 0)[0]
-            line(c, px, ax_y + tx, px, ax_y - 3, w=0.75)
+            line(c, px, ax_y + (3 if top else tx), px, ax_y - (0 if top else 3), w=0.75)
             if s:
-                label(c, px, ax_y - 13, s, anchor='c')
+                label(c, px, lx_y, s, anchor='c')
         for v, s in yt:
             py = self.P(0, v)[1]
             line(c, ax_x + ty, py, ax_x - 3, py, w=0.75)
             if s:
-                label(c, ax_x - 5, py - 3.9, s, anchor='r')
+                label(c, ly_x, py - 3.9, s, anchor='r')
+        ax_x = self.x if self.labels_outside else ax_x
         if xlabel:
             if xlabel_pos == 'right':
-                label(c, self.x + self.w, ax_y - 27, xlabel, anchor='r')
+                label(c, self.x + self.w, xl_y, xlabel, anchor='r')
             else:
-                label(c, self.x + self.w / 2, ax_y - 27, xlabel, anchor='c')
+                label(c, self.x + self.w / 2, xl_y, xlabel, anchor='c')
         if ylabel:
             ytw = max([text_width(s) for _, s in yt] + [0])
             if ylabel_pos == 'top':
-                label(c, ax_x, self.y + self.h + 6, ylabel, anchor='c')
+                label(c, ax_x, self.y + self.h + 10, ylabel, anchor='c')
             else:
                 label(c, ax_x - ytw - 10, self.y + self.h * 0.62, ylabel, anchor='r')
 

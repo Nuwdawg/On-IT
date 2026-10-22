@@ -9,6 +9,7 @@ Q5  electric fields                             Q10 medical physics, astronomy
 Every numerical answer in the mark scheme was checked with a Python script.
 """
 import math
+import re
 
 from engine import *
 from figs import *
@@ -111,7 +112,8 @@ def fig_1_1(c):
     line(c, cx - 22, cy - 8, cx - R - 10, cy - 22, w=0.5)
     text(c, cx - R - 13, cy - 26, 'planet, mass <i>M</i>', anchor='r')
     text(c, cx + R + 6, cy - 50, 'orbit')
-    line(c, cx + R + 4, cy - 44, cx + R * math.cos(math.radians(-25)) + 2, cy + R * math.sin(math.radians(-25)), w=0.5)
+    t = math.radians(-25)
+    line(c, cx + R + 4, cy - 44, cx + R * math.cos(t) + 2, cy + R * math.sin(t), w=0.5)
 
 
 def fig_1_2(c):
@@ -136,11 +138,11 @@ def fig_1_2(c):
     polyline(c, pts, w=0.6)
     text(c, cx + 112 * math.cos(ang / 2), cy + 112 * math.sin(ang / 2) - 4, '30°')
     # satellite X on the front of the orbit
-    t = -2.55
+    t = 2.75
     xs, ys = (cx + a * math.cos(t) * math.cos(ang) - b * math.sin(t) * math.sin(ang),
               cy + a * math.cos(t) * math.sin(ang) + b * math.sin(t) * math.cos(ang))
     dot(c, xs, ys, 4)
-    text(c, xs - 8, ys - 4, 'X', anchor='r')
+    text(c, xs - 5, ys + 5, 'X', anchor='r')
     # direction of motion on the front half
     p = _ellipse(cx, cy, a, b, ang, -1.75, -1.45, n=4)
     arrow(c, p[0][0], p[0][1], p[-1][0], p[-1][1])
@@ -296,8 +298,8 @@ Q2 = Question([
         Sub('ii', [
             Text('The bulb is emptied and then filled with twice the number of molecules of the same gas. The '
                  'volume of the bulb is unchanged.'),
-            Text('On Fig. 2.2, draw a line to show the variation with θ of <i>p</i> for this gas between '
-                 'θ = –273 °C and θ = 100 °C.'),
+            Text('On Fig. 2.2, draw a line to show the variation with θ of <i>p</i> for this gas for temperatures '
+                 'from –273 °C to 100 °C.'),
             Mark(2),
         ]),
     ]),
@@ -310,7 +312,7 @@ Q2 = Question([
              '3.73 kΩ.'),
         Sub('i', [
             Text('Calculate the temperature of the liquid shown by the thermistor thermometer.'),
-            Space(7),
+            Space(8),
             Answer('temperature', '°C', 2),
         ]),
         Sub('ii', [
@@ -339,8 +341,8 @@ MS2 = [
         ('straight line with twice the pressure at each temperature: <i>p</i> = 110 kPa at 0 °C '
          '(and 150 kPa at 100 °C)', 'B1'),
         ('line meets <i>p</i> = 0 at the same temperature as the original line (–273 °C)', 'B1'),
-    ], note='<i>p</i> ∝ <i>NT</i> at constant <i>V</i>, so <i>p</i> = 0 at <i>T</i> = 0 K whatever the '
-            'amount of gas'),
+    ], note='<i>p</i> is proportional to <i>NT</i> at constant <i>V</i>, so <i>p</i> = 0 at <i>T</i> = 0 K '
+            'whatever the amount of gas'),
     MSRow('2(c)(i)', [
         ('temperature = (<i>R</i><sub>0</sub> – <i>R</i>) / (<i>R</i><sub>0</sub> – <i>R</i><sub>100</sub>) × '
          '100<br/>= (32.0 – 3.73) / (32.0 – 0.770) × 100', 'C1'),
@@ -349,8 +351,8 @@ MS2 = [
     MSRow('2(c)(ii)', [
         ('resistance of the thermistor does not vary linearly with (thermodynamic) temperature, so the two '
          'scales agree only at the fixed points (where they were calibrated)', 'B1'),
-        ('the gas thermometer reading (50 °C / 323 K) is the thermodynamic temperature, since <i>p</i> ∝ '
-         '<i>T</i> for an ideal gas at constant volume', 'B1'),
+        ('the gas thermometer reading (50 °C / 323 K) is the thermodynamic temperature, since <i>p</i> is '
+         'proportional to <i>T</i> for an ideal gas at constant volume', 'B1'),
     ]),
 ]
 
@@ -446,7 +448,7 @@ MS3 = [
     ]),
     MSRow('3(c)', [
         ('temperature is not constant', 'B1'),
-        ('<i>pV</i> (∝ <i>T</i>) is 300 J at C and at A but is greater between them, e.g. 400 J at '
+        ('<i>pV</i> (proportional to <i>T</i>) is 300 J at C and at A but is greater between them, e.g. 400 J at '
          '<i>V</i> = 2.0 × 10<sup>–3</sup> m<sup>3</sup>, so temperature rises and then falls', 'B1'),
     ], note='Δ<i>U</i> = 0 means only that the temperatures at C and A are equal'),
     MSRow('3(d)', [
@@ -521,8 +523,8 @@ Q4 = Question([
             Mark(1),
         ]),
         Sub('ii', [
-            Text('On Fig. 4.2, draw lines to show the variation with <i>x</i> of:'),
-            Text('1.  the kinetic energy of the glider (label this line K)<br/>'
+            Text('On Fig. 4.2, draw lines to show the variation with <i>x</i> of:<br/><br/>'
+                 '1.  the kinetic energy of the glider (label this line K)<br/>'
                  '2.  the total energy of the oscillations (label this line T).'),
             Mark(2),
         ]),
@@ -541,7 +543,7 @@ Q4 = Question([
              'air supply to the track is reduced so that the oscillations are lightly damped. After several '
              'oscillations, the amplitude has decreased to 2.0 cm.'),
         Text('Determine the energy that has been dissipated.'),
-        Space(6),
+        Space(8),
         Answer('energy', 'mJ', 2),
     ]),
 ])
@@ -568,8 +570,8 @@ MS4 = [
     ], note='the period does not depend on the amplitude, so the 2.0 cm displacement is not used<br/>'
             'springs treated as in parallel (<i>k</i> = 100 N m<sup>–1</sup>, <i>T</i> = 0.44 s): max. 1 mark'),
     MSRow('4(d)', [
-        ('energy ∝ (amplitude)<sup>2</sup> / <i>E</i> = ½<i>kx</i><sub>0</sub><sup>2</sup>: energy remaining '
-         '= 40 / 4 = 10 mJ', 'C1'),
+        ('energy is proportional to (amplitude)<sup>2</sup> / <i>E</i> = ½<i>kx</i><sub>0</sub><sup>2</sup>: '
+         'energy remaining = 40 / 4 = 10 mJ', 'C1'),
         ('energy dissipated = 40 – 10 = 30 mJ', 'A1'),
     ], note='20 mJ (energy taken as proportional to amplitude) scores 0'),
 ]
@@ -699,7 +701,7 @@ Q5 = Question([
         Sub('iii', [
             Text('The charge on the sphere is now doubled. The droplet is initially at rest at the same point. '
                  'Determine the magnitude and the direction of the initial acceleration of the droplet.'),
-            Space(4),
+            Space(6),
             Answer('magnitude', 'm s<sup>–2</sup>', None),
             Answer('direction', '', 2),
         ]),
@@ -838,8 +840,8 @@ MS6 = [
         ('<i>R</i> = 1 / (0.213 × 470 × 10<sup>–6</sup>) = 1.0 × 10<sup>4</sup> Ω', 'A1'),
     ]),
     MSRow('6(c)(ii)', [
-        ('energy ∝ <i>V</i><sup>2</sup>, so energy halves when <i>V</i> = <i>V</i><sub>0</sub> / √2 / when '
-         'ln (<i>V</i> / V) has decreased by ½ ln 2 = 0.35', 'C1'),
+        ('energy is proportional to <i>V</i><sup>2</sup>, so energy halves when <i>V</i> = '
+         '<i>V</i><sub>0</sub> / √2 / when ln (<i>V</i> / V) has decreased by ½ ln 2 = 0.35', 'C1'),
         ('<i>t</i> = ½<i>RC</i> ln 2 = 0.5 × 4.7 × 0.693 = 1.6 s', 'A1'),
     ], note='3.3 s (the time for the p.d. to halve) scores 0'),
 ]
@@ -882,10 +884,9 @@ def fig_7_1(c):
 
 
 def fig_7_2(c):
-    g = Graph(c, 60, 30, _sq(75), _sq(20), xr=(0, 150), yr=(0, 10), xmajor=10, ymajor=2.5, minor=5,
+    g = Graph(c, 60, 30, _sq(75), _sq(25), xr=(0, 150), yr=(0, 10), xmajor=10, ymajor=2, minor=5,
               xlabel='<i>t</i> / ms', ylabel='<i>N</i>Φ / mWb',
-              xticks=[(v, str(v)) for v in range(0, 151, 20)],
-              yticks=[(v, '%.1f' % v if v else '0') for v in (0, 2.5, 5.0, 7.5, 10.0)])
+              xticks=[(v, str(v)) for v in range(0, 151, 20)])
     g.curve(_flux, 0, 150, n=400, w=1.2)
     g.finish()
 
@@ -936,7 +937,7 @@ Q7 = Question([
         Fig(300, 150, fig_7_1, 'Fig. 7.1'),
         Text('The magnet is released from rest at time <i>t</i> = 0 and falls through the coil. Fig. 7.2 shows '
              'the variation with <i>t</i> of the magnetic flux linkage <i>N</i>Φ of the coil.'),
-        Fig(490, 152, fig_7_2, 'Fig. 7.2'),
+        Fig(490, 180, fig_7_2, 'Fig. 7.2'),
         Sub('i', [
             Text('On Fig. 7.3, sketch the variation with <i>t</i> of the electromotive force (e.m.f.) <i>E</i> '
                  'induced in the coil.'),
@@ -986,8 +987,8 @@ MS7 = [
         ('positive carriers move in the opposite direction to electrons, so the magnetic force (<i>BQv</i>) on '
          'them is in the same direction: they collect on the same face, but the charge there is now positive',
          'B1'),
-        ('Hall voltage is four times larger because <i>V</i><sub>H</sub> = <i>BI</i> / <i>ntq</i> ∝ 1 / '
-         '<i>n</i> (the drift speed is four times larger)', 'B1'),
+        ('Hall voltage is four times larger because <i>V</i><sub>H</sub> = <i>BI</i> / <i>ntq</i>, so '
+         '<i>V</i><sub>H</sub> is proportional to 1 / <i>n</i> (the drift speed is four times larger)', 'B1'),
     ]),
 ]
 
@@ -1017,7 +1018,7 @@ def fig_8_1(c):
     resistor(c, 330, 100, 330, 30)
     text(c, 342, 61, 'load resistor')
     text(c, 342, 48, '<i>R</i> = 150 Ω')
-    wire(c, [(330, 30), (330, 12), (150, 12), (150, 100)])
+    wire(c, [(330, 30), (330, 12), (122, 12), (122, 100), (150, 100)])
 
 
 def fig_8_2(c):
@@ -1220,8 +1221,8 @@ MS9 = [
          'A1'),
     ]),
     MSRow('9(a)(ii)', [
-        ('<i>p</i> ∝ √<i>V</i> so λ ∝ 1 / √<i>V</i>: the wavelength halves (it does not decrease to one '
-         'quarter)', 'B1'),
+        ('<i>p</i> is proportional to √<i>V</i> so λ is proportional to 1 / √<i>V</i>: the wavelength '
+         'halves (it does not decrease to one quarter)', 'B1'),
         ('angle of diffraction (approximately) proportional to wavelength, so the radius of each ring '
          '(approximately) halves', 'B1'),
     ]),
@@ -1355,7 +1356,7 @@ MS10 = [
     ], note='689.1 nm in the denominator (1.43 × 10<sup>7</sup> m s<sup>–1</sup>) scores 1 mark'),
     MSRow('10(b)(ii)', [
         ('<i>d</i> = <i>v</i> / <i>H</i><sub>0</sub> = 1.50 × 10<sup>7</sup> / 2.3 × 10<sup>–18</sup> = '
-         '6.5 × 10<sup>24</sup> m', 'A1'),
+         '6.5 × 10<sup>24</sup> m', 'B1'),
     ]),
     MSRow('10(b)(iii)', [
         ('time = <i>d</i> / <i>v</i> = 1 / <i>H</i><sub>0</sub> = 4.3 × 10<sup>17</sup> s', 'C1'),
@@ -1366,6 +1367,19 @@ MS10 = [
 
 
 # ================================================================== paper
+
+def _tie_refs(blocks):
+    """Keep "Fig. 2.2", "Table 3.1" and "t = 10 ms" together when a paragraph is wrapped."""
+    for b in blocks:
+        if isinstance(b, Text):
+            b.rich = re.sub(r'(Fig\.|Table) (\d)', '\\1\u00a0\\2', b.rich)
+            b.rich = re.sub(r'(</i>(?:<sub>[^<]*</sub>)?) = ', '\\1\u00a0=\u00a0', b.rich)
+        elif isinstance(b, (Part, Sub)):
+            _tie_refs(b.blocks)
+
+
+for _q in (Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10):
+    _tie_refs(_q.blocks)
 
 MS = MS1 + MS2 + MS3 + MS4 + MS5 + MS6 + MS7 + MS8 + MS9 + MS10
 

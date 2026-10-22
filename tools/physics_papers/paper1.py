@@ -838,7 +838,8 @@ Q10 = Question([
              'reflected at a boundary between the soft tissue and bone, as shown in Fig. 10.1.'),
         Fig(330, 136, fig_10_1, 'Fig. 10.1'),
         Text('The reflected pulse returns through the same soft tissue to the transducer. The linear '
-             'attenuation coefficient of soft tissue for this ultrasound is 0.23 cm<sup>–1</sup>.'),
+             'attenuation coefficient of soft tissue for this ultrasound is 0.23 cm<sup>–1</sup>. Assume that '
+             'there is no reflection at any other boundary.'),
         Text('Calculate the intensity of the reflected pulse arriving at the transducer as a fraction of the '
              'intensity of the pulse entering the soft tissue.'),
         Space(8),
@@ -964,7 +965,7 @@ MS = [
          'in B', 'B1'),
     ]),
     MSRow('3(d)(ii)', [
-        ('r.m.s. speed ∝ √<i>T</i>', 'C1'),
+        ('r.m.s. speed is proportional to √<i>T</i>', 'C1'),
         ('ratio = √(450 / 300) = 1.2', 'A1'),
     ], note='Use of Celsius temperatures, √(177 / 27) = 2.6, scores 0.'),
     # ---------------------------------------------------------------- Q4

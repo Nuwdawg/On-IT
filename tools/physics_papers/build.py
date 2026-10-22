@@ -46,6 +46,8 @@ def build(n, png_dir=None):
         import pymupdf
         d = Path(png_dir)
         d.mkdir(parents=True, exist_ok=True)
+        for old in d.glob(f'p{n}_*.png'):
+            old.unlink()
         for f, tag in ((qp, 'qp'), (ms, 'ms')):
             doc = pymupdf.open(f)
             for i, page in enumerate(doc):

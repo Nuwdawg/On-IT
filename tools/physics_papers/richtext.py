@@ -27,6 +27,8 @@ for _name, _path in _FONTS.items():
     if _name not in pdfmetrics.getRegisteredFontNames():
         pdfmetrics.registerFont(TTFont(_name, _path))
 _ARIAL_CMAP = pdfmetrics.getFont('Arial').face.charToGlyph
+# characters Liberation Sans maps but draws as an empty box
+_FORCE_SYM = set('∝⇌')
 
 SUP_SIZE = 8.0     # superscripts and subscripts in 11 pt text
 SUP_RISE = 3.85
@@ -55,13 +57,16 @@ class Run:
     size: float
     rise: float = 0.0
     underline: bool = False
+    stack: tuple = None      # (top, bottom) for nuclide notation, drawn right-aligned
 
     @property
     def w(self):
+        if self.stack:
+            return max(width(t, self.font, self.size) for t in self.stack) + 0.6
         return width(self.text, self.font, self.size)
 
 
-_TAG = re.compile(r'<(/?)(i|b|u|sup|sub|br\s*/?)\s*>')
+_TAG = re.compile(r'<(/?)(i|b|u|sup|sub|br\s*/?)\s*>|<nuc\s+a="([^"]*)"\s+z="([^"]*)"\s*/>')
 
 
 def _unescape(s):
@@ -76,7 +81,10 @@ def runs(s, size=11.0, bold=False, italic=False):
     for m in _TAG.finditer(s):
         _emit(out, _unescape(s[pos:m.start()]), st, size)
         closing, tag = m.group(1), m.group(2)
-        if tag.startswith('br'):
+        if m.group(3) is not None:          # <nuc a="4" z="2"/> before an element symbol
+            out.append(Run('\x01', 'Arial', size * SUP_SIZE / 11, 0.0, False,
+                           (m.group(3), m.group(4))))
+        elif tag.startswith('br'):
             out.append(Run('\n', 'Arial', size))
         else:
             st[tag] = not closing
@@ -96,7 +104,7 @@ def _emit(out, text, st, size):
     # split into runs of characters Arial can and cannot show
     cur, cur_sym = '', None
     for ch in text:
-        sym = ord(ch) not in _ARIAL_CMAP and ch not in '\n'
+        sym = (ord(ch) not in _ARIAL_CMAP or ch in _FORCE_SYM) and ch not in '\n'
         if cur and sym != cur_sym:
             out.append(Run(cur, font_name(st['b'], st['i'], cur_sym), sz, rise, st['u']))
             cur = ''
@@ -115,9 +123,14 @@ def draw_runs(c, x, y, rs):
     for r in rs:
         if r.text == '\n':
             continue
-        c.setFont(r.font, r.size)
-        c.drawString(x, y + r.rise, r.text)
         w = r.w
+        c.setFont(r.font, r.size)
+        if r.stack:
+            base = r.size * 11 / SUP_SIZE        # size of the text the nuclide sits in
+            c.drawRightString(x + w - 0.6, y + base * SUP_RISE / 11, r.stack[0])
+            c.drawRightString(x + w - 0.6, y + base * SUB_RISE * 1.25 / 11, r.stack[1])
+        else:
+            c.drawString(x, y + r.rise, r.text)
         if r.underline:
             c.setLineWidth(0.6)
             c.line(x, y - 1.6, x + w, y - 1.6)
@@ -147,6 +160,9 @@ def _words(rs):
             cur = []
             continue
         parts = r.text.split(' ')
+        if r.stack:
+            cur.append(r)
+            continue
         for k, p in enumerate(parts):
             if k > 0:
                 words.append((cur, False))
@@ -157,7 +173,7 @@ def _words(rs):
     return words
 
 
-_UNIT = re.compile(r'^(?:[μµkMGmnpc]?(?:m|s|g|N|J|W|V|A|C|F|Ω|K|Pa|Hz|mol|eV|T|Wb|rad|Bq|Gy|Sv|u|ly|pc|AU)'
+_UNIT = re.compile(r'^(?:[μµkMGmnpc]?(?:m|s|g|N|J|W|V|A|C|F|Ω|K|Pa|Hz|mol|eV|T|Wb|rad|Bq|Gy|Sv|u|ly|pc|AU|min|h|yr|days?|years?)'
                    r'|°C|%)(?:[–-]?\d+)?([.,;:)]*)$')
 _TAGS = re.compile(r'<[^>]+>')
 
@@ -166,6 +182,7 @@ def tie_units(s):
     """Join a number to its unit, and the parts of a unit, so a line never
     breaks inside "17 m s–1" (thin spaces, as Cambridge sets them), and keep
     "3.0 × 10" together."""
+    s = re.sub(r'\b(Fig\.|Table) (?=\d)', '\\1\u00a0', s)
     toks = s.split(' ')
     if len(toks) < 2:
         return s

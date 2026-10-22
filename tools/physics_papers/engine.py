@@ -336,8 +336,8 @@ def flatten(qnum, q):
             if isinstance(b, Text):
                 it = _text_item(b, x, path)
                 nxt = blocks[i + 1] if i + 1 < len(blocks) else None
-                if isinstance(nxt, (Fig, FigRow, Table, Eq)):
-                    it.keep_next = True
+                if isinstance(nxt, (Fig, FigRow, Table, Eq, Text)):
+                    it.keep_next = True      # a stem stays with what it introduces
                 add(it, b)
             elif isinstance(b, Lines):
                 add(_lines_item(b, x, path), b)
@@ -366,10 +366,13 @@ def flatten(qnum, q):
                 elif isinstance(pb, Table):
                     it.gap = 2
                 add(it, b)
-            elif isinstance(b, Fig):
-                add(_fig_item(b, path), b)
-            elif isinstance(b, FigRow):
-                add(_figrow_item(b, path), b)
+            elif isinstance(b, (Fig, FigRow)):
+                it = _fig_item(b, path) if isinstance(b, Fig) else _figrow_item(b, path)
+                caps = [b.caption] if isinstance(b, Fig) else [f.caption for f in b.figs]
+                nxt = blocks[i + 1] if i + 1 < len(blocks) else None
+                if isinstance(nxt, Text) and any(cap and cap in nxt.rich for cap in caps):
+                    it.keep_next = True      # e.g. "On Fig. 5.2, sketch ..." stays with Fig. 5.2
+                add(it, b)
             elif isinstance(b, Table):
                 add(_table_item(b, x, path), b)
             elif isinstance(b, Eq):
@@ -420,6 +423,16 @@ def paginate(items):
             page, top = [], TOP
             continue
         h = sum(it.h for it in g) + sum(it.gap for it in g[1:])
+        if h > BOTTOM - TOP and len(g) > 1:
+            # too tall to keep together: let it break between its items
+            for k, it in enumerate(g):
+                gap = it.gap if page else 0
+                if page and top + gap + it.h > BOTTOM:
+                    pages.append(page)
+                    page, top, gap = [], TOP, 0
+                page.append((it, top + gap))
+                top += gap + it.h
+            continue
         gap = g[0].gap if page else 0
         if page and top + gap + h > BOTTOM:
             pages.append(page)
@@ -475,7 +488,6 @@ class QPDoc:
         self.n = paper.number
         self.comp = f'9702/4{self.n}'
         self.series = SERIES
-        self.foot_left = 'Not a Cambridge paper'
         self.foot_centre = f'9702/4{self.n}/{SERIES_CODE}'
 
     def page_marks(self, c, pageno, cover=False):
@@ -493,7 +505,6 @@ class QPDoc:
         margin_bar(c, 'right' if pageno % 2 == 0 else 'left')
         text_at(c, CENTRE, 38.5, str(pageno), anchor='c', bold=True)
         c.setFont('Arial', 8)
-        c.drawString(49.6, y_(798.6 + 6.4), self.foot_left)
         c.drawCentredString(CENTRE, y_(798.6 + 6.4), self.foot_centre)
         if pageno % 2 == 1 and turn_over:
             text_at(c, RIGHT, 796.2, '[Turn over', anchor='r', bold=True)
@@ -559,7 +570,6 @@ class QPDoc:
         text_at(c, CENTRE, 733.4, msg, size=10, anchor='c')
         c.setFont('Arial', 8)
         c.drawString(56.7, y_(768.8 + 6.4), f'Practice Paper {self.n}')
-        c.drawString(56.7, y_(778.8 + 6.4), self.foot_left)
         text_at(c, 538.6, 777.2, '[Turn over', size=10, anchor='r', bold=True)
 
     # ---------------------------------------------------------- data pages
@@ -663,7 +673,7 @@ class QPDoc:
         total_pages = int(math.ceil(content / 4.0) * 4)
         c = rl_canvas.Canvas(path, pagesize=A4)
         c.setTitle(f'A Level Physics 9702 Practice Paper {self.n}')
-        c.setAuthor('Practice paper (not an official Cambridge document)')
+        c.setAuthor('F3XP M.A.R.S.')
         self.cover(c, total_pages)
         c.showPage()
         self.furniture(c, 2, total_pages)
@@ -709,7 +719,6 @@ class MSDoc:
         draw_rich(c, LW / 2, ly(34.2 + 8.8), 'PRACTICE PAPER', anchor='c', bold=True)
         draw_rich(c, 779.8, ly(21.6 + 8.8), SERIES, anchor='r')
         c.setFont('Arial', 8)
-        c.drawString(MS_L, ly(549.9 + 6.4), 'Not a Cambridge paper')
         c.drawCentredString(LW / 2, ly(549.9 + 6.4), f'Page {pageno} of {total}')
 
     def cover(self, c, total):
@@ -732,7 +741,6 @@ class MSDoc:
             'the marking points that the paper was written to test, set out in the layout of the 2025 Cambridge '
             'International mark schemes.',
             'Alternative answers that are correct physics should be credited even where they are not listed.',
-            'This is not an official Cambridge International document.',
         ]
         t = 312
         for p in paras:
@@ -743,7 +751,6 @@ class MSDoc:
         c.line(56.7, y(735), 538.6, y(735))
         draw_rich(c, CENTRE, y(749), f'This document consists of <b>{total}</b> printed pages.', size=10, anchor='c')
         c.setFont('Arial', 8)
-        c.drawString(56.7, y(792), 'Not a Cambridge paper')
         draw_rich(c, 538.6, y(792), '[Turn over', size=10, anchor='r', bold=True)
 
     def guidance(self, c):
@@ -774,8 +781,8 @@ class MSDoc:
                     'which indicate the <b>context</b> for an answer.'),
             ('<u>     </u>', 'Underlined content must be present in the answer to award the mark.'),
             ('ecf', 'Error carried forward: an incorrect earlier answer used correctly later gains the later marks.'),
-            ('allow / ignore', '<b>allow</b> lists other answers that gain the mark; <b>ignore</b> lists content '
-                               'that neither gains nor loses credit.'),
+            ('allow', 'Lists other answers that gain the mark.'),
+            ('ignore', 'Lists content that neither gains nor loses credit.'),
         ]
         c.setLineWidth(0.5)
         for a, b in abbr:
