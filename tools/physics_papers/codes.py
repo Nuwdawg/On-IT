@@ -57,7 +57,7 @@ LOGO = HERE / 'logo.png'      # black-and-white logo made by make_logo.py
 
 
 def logo(c, x, y, w, h, align='left'):
-    """Draw the logo fitted inside the w x h box with bottom-left (x, y),
+    """Draw the F3XP M.A.R.S. logo fitted inside the w x h box with bottom-left (x, y),
     left-aligned and vertically centred, as the Cambridge logo sits.
     Does nothing if there is no logo file yet."""
     if not LOGO.exists():
