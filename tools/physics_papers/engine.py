@@ -555,12 +555,6 @@ class QPDoc:
                                'The number of marks for each question or part question is shown in brackets [ ].']):
             tx(56.7, 511.3 - 13 + 13 * k, '●')
             tx(78.0, 511.3 - 13 + 13 * k, s)
-        note = ('This practice paper was written in the style of the 2025 Cambridge International A Level Physics (9702) '
-                'Paper 4 question papers. It covers every A Level topic (12 to 25). Questions start with routine parts; later '
-                'parts join topics, give answers in terms of symbols, or test whether a result that looks right really is. '
-                'It is not an official Cambridge International document.')
-        for k, (words, last) in enumerate(wrap(note, 538.6 - 56.7, size=10)):
-            draw_line(c, 56.7, y_(660.0 + 8.0 + 12 * k), words, 538.6 - 56.7, 'justify', last, size=10)
         msg = f'This document has <b>{total}</b> pages. Any blank pages are indicated.'
         text_at(c, CENTRE, 733.4, msg, size=10, anchor='c')
         c.setFont('Arial', 8)
