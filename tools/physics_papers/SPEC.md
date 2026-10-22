@@ -226,8 +226,8 @@ layout and the figures. Only touch your own paper module: `engine.py`,
 them).
 
 Layout notes:
-- A Text right after a figure that names it (`On Fig. 5.2, sketch ...`)
-  is kept on the same page as the figure.
+- A Text right after a figure that starts `On Fig. 5.2, ...` (an
+  instruction to draw on it) is kept on the same page as the figure.
 - An all-negative y range puts the x-axis along the top with its labels above.
 - Numbers and units are tied automatically (`17 m s<sup>–1</sup>` never
   breaks across lines), so write units with ordinary spaces.

@@ -378,8 +378,8 @@ def flatten(qnum, q):
                 it = _fig_item(b, path) if isinstance(b, Fig) else _figrow_item(b, path)
                 caps = [b.caption] if isinstance(b, Fig) else [f.caption for f in b.figs]
                 nxt = blocks[i + 1] if i + 1 < len(blocks) else None
-                if isinstance(nxt, Text) and any(cap and cap in nxt.rich for cap in caps):
-                    it.keep_next = True      # e.g. "On Fig. 5.2, sketch ..." stays with Fig. 5.2
+                if isinstance(nxt, Text) and any(cap and nxt.rich.lstrip().startswith('On ' + cap) for cap in caps):
+                    it.keep_next = True      # "On Fig. 5.2, sketch ..." stays with Fig. 5.2
                 add(it, b)
             elif isinstance(b, Table):
                 add(_table_item(b, x, path), b)

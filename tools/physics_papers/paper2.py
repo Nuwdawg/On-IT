@@ -476,30 +476,37 @@ MS3 = [
 
 
 def fig_4_1(c):
+    # drawn at 0.8 of its original size about the balloon's axis (x = 110); labels stay full size
+    k = 0.8
+
+    def T(x, y):
+        return 110 + (x - 110) * k, 2 + y * k
+
     cx, cy, r = 110, 126, 56
-    a0, a1 = -48, 228
-    pts = arc_pts(cx, cy, r, a0, a1, n=80)
-    throat_l, throat_r = (98, 52), (122, 52)
+    pts = [T(*q) for q in arc_pts(cx, cy, r, -48, 228, n=80)]
+    throat_l, throat_r = T(98, 52), T(122, 52)
     polyline(c, [throat_r] + pts + [throat_l], w=1.0)
     # gores
-    for k in (-0.55, 0, 0.55):
-        q = [(cx + r * k * math.sin(math.radians(t)) * 0.9, cy + r * math.cos(math.radians(t)))
+    for g in (-0.55, 0, 0.55):
+        q = [(cx + r * g * math.sin(math.radians(t)) * 0.9, cy + r * math.cos(math.radians(t)))
              for t in range(-90, 91, 10)]
-        polyline(c, [(x, y) for x, y in q if y > 92], w=0.4)
+        polyline(c, [T(x, y) for x, y in q if y > 92], w=0.4)
     # burner and flame
-    rect(c, 104, 33, 12, 7, fill=0.6)
-    polyline(c, [(107, 40), (110, 48), (113, 40)], w=0.6)
+    bx, by = T(104, 33)
+    rect(c, bx, by, 12 * k, 7 * k, fill=0.6)
+    polyline(c, [T(107, 40), T(110, 48), T(113, 40)], w=0.6)
     # basket and ropes
-    rect(c, 91, 4, 38, 20, fill=None)
-    hatch(c, 91, 4, 38, 20, spacing=5)
-    line(c, throat_l[0], throat_l[1], 91, 24, w=0.6)
-    line(c, throat_r[0], throat_r[1], 129, 24, w=0.6)
-    line(c, 106, 33, 101, 24, w=0.5)
-    line(c, 114, 33, 119, 24, w=0.5)
-    leader(c, 200, 166, 155, 160, 'envelope')
-    leader(c, 200, 64, 123, 54, 'opening')
-    leader(c, 200, 40, 117, 37, 'burner')
-    leader(c, 200, 14, 130, 14, 'basket')
+    kx, ky = T(91, 4)
+    rect(c, kx, ky, 38 * k, 20 * k, fill=None)
+    hatch(c, kx, ky, 38 * k, 20 * k, spacing=5)
+    line(c, *throat_l, *T(91, 24), w=0.6)
+    line(c, *throat_r, *T(129, 24), w=0.6)
+    line(c, *T(106, 33), *T(101, 24), w=0.5)
+    line(c, *T(114, 33), *T(119, 24), w=0.5)
+    leader(c, 190, T(0, 166)[1], *T(155, 160), 'envelope')
+    leader(c, 190, T(0, 64)[1] + 4, *T(123, 54), 'opening')
+    leader(c, 190, T(0, 40)[1], *T(117, 37), 'burner')
+    leader(c, 190, T(0, 14)[1] - 4, *T(130, 14), 'basket')
 
 
 Q4 = Question([
@@ -523,7 +530,7 @@ Q4 = Question([
         ]),
         Sub('ii', [
             Text('Calculate, for the sample of air, the ratio'),
-            Eq(Frac('r.m.s. speed of the nitrogen molecules', 'r.m.s. speed of the oxygen molecules'), ' .'),
+            Eq(Frac('r.m.s. speed of the nitrogen molecules', 'r.m.s. speed of the oxygen molecules')),
             Space(5),
             Answer('ratio', '', 1),
         ]),
@@ -533,9 +540,8 @@ Q4 = Question([
              'base, so that the pressure of the air inside it is always equal to the atmospheric pressure of '
              '1.01 × 10<sup>5</sup> Pa. Initially, the air inside the envelope is at the same temperature as the air outside, 15 °C. '
              'A burner then heats the air inside the envelope to 100 °C. The molar mass of air is '
-             '0.029 kg mol<sup>–1</sup>.'),
-        Text('Fig. 4.1 shows the balloon.'),
-        Fig(290, 182, fig_4_1, 'Fig. 4.1'),
+             '0.029 kg mol<sup>–1</sup>. The balloon is shown in Fig. 4.1.'),
+        Fig(270, 150, fig_4_1, 'Fig. 4.1'),
         Sub('i', [
             Text('A student states that the pressure of the air inside the envelope increases as it is heated, '
                  'because <i>p</i> / <i>T</i> is constant for an ideal gas. Explain why the student is wrong.'),
@@ -589,7 +595,7 @@ MS4 = [
 
 
 def fig_5_1(c):
-    ox, oy, r = 150, 104, 50
+    ox, oy, r = 150, 92, 42
     th = 50
     circle(c, ox, oy, r, w=1.0)
     dot(c, ox, oy, 2)
@@ -604,14 +610,14 @@ def fig_5_1(c):
     polyline(c, arc_pts(ox, oy, 17, 0, th, n=16), w=0.6)
     text(c, ox + 22, oy + 6, '<i>θ</i>')
     arc_arrow(c, ox, oy, r + 10, 105, 150)
-    text(c, ox - 46, oy + 50, '<i>ω</i>', anchor='r')
+    text(c, ox - 40, oy + 43, '<i>ω</i>', anchor='r')
     leader(c, 258, 58, ox + r * math.cos(math.radians(-30)) + 1, oy + r * math.sin(math.radians(-30)),
            'turntable')
     # light
     for x in (74, 112, 196, 234):
-        arrow(c, x, 184, x, 162)
-    text(c, 246, 174, 'parallel beam')
-    text(c, 246, 161, 'of light')
+        arrow(c, x, 166, x, 146)
+    text(c, 246, 156, 'parallel beam')
+    text(c, 246, 143, 'of light')
     # screen
     sy = 26
     line(c, 50, sy, 290, sy, w=1.4)
@@ -626,7 +632,7 @@ def fig_5_1(c):
 
 
 def fig_5_2(c):
-    ox, oy, w, h = 46, 18, 250, 108
+    ox, oy, w, h = 46, 18, 250, 90
     sketch_axes(c, ox, oy, w, h, '<i>f</i>', '<i>A</i>')
 
     def amp(f):
@@ -660,7 +666,7 @@ def fig_5_3(c):
 Q5 = Question([
     Text('Fig. 5.1 is a view from above of a peg P fixed to the edge of a horizontal turntable of radius '
          '<i>r</i>.'),
-    Fig(340, 186, fig_5_1, 'Fig. 5.1', note='(view from above)'),
+    Fig(340, 166, fig_5_1, 'Fig. 5.1', note='(view from above)'),
     Text('The turntable rotates about its centre O with constant angular speed <i>ω</i>. A horizontal parallel '
          'beam of light casts a shadow S of the peg on a vertical screen. At the instant shown, the line OP '
          'makes an angle <i>θ</i> with a line through O that is parallel to the screen. The displacement of S '
@@ -678,7 +684,7 @@ Q5 = Question([
         Text('A mass on a spring is made to oscillate by a periodic driving force of frequency <i>f</i>. '
              'Fig. 5.2 shows the variation with <i>f</i> of the amplitude <i>A</i> of the oscillations when the '
              'damping is light.'),
-        Fig(310, 130, fig_5_2, 'Fig. 5.2'),
+        Fig(310, 112, fig_5_2, 'Fig. 5.2'),
         Text('On Fig. 5.2, sketch a line to show the variation with <i>f</i> of <i>A</i> when the damping is '
              'increased.'),
         Mark(2),
@@ -1089,7 +1095,7 @@ def fig_9_1(c):
     pts = [(ox + sx * (k / 200), oy + sy * spectrum(k / 200)) for k in range(int(LMIN * 200), 20 * 200 + 1)]
     polyline(c, [(ox + sx * LMIN, oy)] + pts, w=1.1)
     line(c, ox + sx * LMIN, oy, ox + sx * LMIN, oy - 4)
-    text(c, ox + sx * LMIN, oy - 15, 'λ<sub>min</sub>', anchor='c')
+    text(c, ox + sx * LMIN, oy - 15, '<i>λ</i><sub>min</sub>', anchor='c')
     text(c, ox + sx * KA + 3, oy + sy * spectrum(KA) + 2, 'P')
     text(c, ox + sx * KB - 3, oy + sy * spectrum(KB) + 2, 'Q', anchor='r')
 
@@ -1112,15 +1118,15 @@ Q9 = Question([
     Text('Fig. 9.1 shows the spectrum of the X-rays produced when the accelerating p.d. is 28.0 kV.'),
     Fig(360, 184, fig_9_1, 'Fig. 9.1'),
     Text('The spectrum consists of a continuous range of wavelengths, with a minimum wavelength '
-         'λ<sub>min</sub>, together with two sharp peaks P and Q.'),
+         '<i>λ</i><sub>min</sub>, together with two sharp peaks P and Q.'),
     Part('a', [
         Text('Explain why there is a minimum wavelength.'),
         Lines(2, 1),
     ]),
     Part('b', [
-        Text('Calculate λ<sub>min</sub>.'),
+        Text('Calculate <i>λ</i><sub>min</sub>.'),
         Space(6),
-        Answer('λ<sub>min</sub>', 'm', 2),
+        Answer('<i>λ</i><sub>min</sub>', 'm', 2),
     ]),
     Part('c', [
         Text('The current in the X-ray tube is doubled. The accelerating p.d. is unchanged.'),
@@ -1144,10 +1150,9 @@ Q9 = Question([
              'half-value thickness (the thickness of material that halves the intensity of a parallel beam) is '
              '3.5 cm for soft tissue and 1.3 cm for bone.'),
         Text('Along path A through the limb, a parallel beam of X-rays passes through 7.0 cm of soft tissue only. '
-             'Along path B, the beam passes through 2.0 cm of bone and 5.0 cm of soft tissue.'),
-        Text('Determine the ratio'),
-        Eq(Frac('intensity of X-rays emerging along path B', 'intensity of X-rays emerging along path A'), ' .'),
-        Space(9),
+             'Along path B, the beam passes through 2.0 cm of bone and 5.0 cm of soft tissue. Determine the ratio'),
+        Eq(Frac('intensity of X-rays emerging along path B', 'intensity of X-rays emerging along path A')),
+        Space(8),
         Answer('ratio', '', 3),
     ]),
 ])
@@ -1158,12 +1163,12 @@ MS9 = [
          'produces one photon', 'B1'),
     ]),
     MSRow('9(b)', [
-        ('<i>eV</i> = <i>hc</i> / λ<sub>min</sub>', 'C1'),
-        ('λ<sub>min</sub> = (6.63 × 10<sup>–34</sup> × 3.00 × 10<sup>8</sup>) / '
+        ('<i>eV</i> = <i>hc</i> / <i>λ</i><sub>min</sub>', 'C1'),
+        ('<i>λ</i><sub>min</sub> = (6.63 × 10<sup>–34</sup> × 3.00 × 10<sup>8</sup>) / '
          '(1.60 × 10<sup>–19</sup> × 28.0 × 10<sup>3</sup>) = 4.44 × 10<sup>–11</sup> m', 'A1'),
     ]),
     MSRow('9(c)', [
-        ('same λ<sub>min</sub>, with peaks P and Q at the same wavelengths', 'B1'),
+        ('same <i>λ</i><sub>min</sub>, with peaks P and Q at the same wavelengths', 'B1'),
         ('greater (about double) intensity at all wavelengths', 'B1'),
     ]),
     MSRow('9(d)', [
