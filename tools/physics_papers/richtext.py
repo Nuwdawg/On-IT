@@ -1,9 +1,9 @@
 """Fonts, rich-text runs and a small math layout used by the paper engine.
 
 Rich text is a reportlab-style mini-HTML: <i>, <b>, <u>, <sup>, <sub>, <br/>
-and the entities &lt; &gt; &amp;. Body text is Arial 11 pt; Liberation Sans
-stands in for Arial (identical metrics) and DejaVu Sans covers the few
-symbols Liberation lacks.
+and the entities &lt; &gt; &amp;. Body text is Arial 11 pt, as on Cambridge
+papers (get_arial.sh fetches it; Liberation Sans stands in if it is
+missing), and DejaVu Sans covers the few symbols Arial lacks.
 """
 import re
 from dataclasses import dataclass
@@ -11,13 +11,33 @@ from dataclasses import dataclass
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
+import os
+
 LIB = '/usr/share/fonts/truetype/liberation/'
 DJV = '/usr/share/fonts/truetype/dejavu/'
+FRE = '/usr/share/fonts/truetype/freefont/'
+ARIAL = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'fonts') + '/'
+if os.path.exists(ARIAL + 'arial.ttf'):
+    # the real Arial, fetched by get_arial.sh: Cambridge papers are set in Arial
+    _ARIAL_FILES = ('arial.ttf', 'arialbd.ttf', 'ariali.ttf', 'arialbi.ttf')
+    _ARIAL_DIR = ARIAL
+else:
+    # Liberation Sans has Arial's metrics but not its letter shapes
+    print('  WARNING: Arial not found, using Liberation Sans (run get_arial.sh)')
+    _ARIAL_FILES = ('LiberationSans-Regular.ttf', 'LiberationSans-Bold.ttf',
+                    'LiberationSans-Italic.ttf', 'LiberationSans-BoldItalic.ttf')
+    _ARIAL_DIR = LIB
 _FONTS = {
-    'Arial': LIB + 'LiberationSans-Regular.ttf',
-    'Arial-Bold': LIB + 'LiberationSans-Bold.ttf',
-    'Arial-Italic': LIB + 'LiberationSans-Italic.ttf',
-    'Arial-BoldItalic': LIB + 'LiberationSans-BoldItalic.ttf',
+    'Arial': _ARIAL_DIR + _ARIAL_FILES[0],
+    'Arial-Bold': _ARIAL_DIR + _ARIAL_FILES[1],
+    'Arial-Italic': _ARIAL_DIR + _ARIAL_FILES[2],
+    'Arial-BoldItalic': _ARIAL_DIR + _ARIAL_FILES[3],
+    # Greek letters and a few signs: Cambridge sets them in Symbol, a fine
+    # Times-style face; FreeSerif is the closest free match
+    'Greek': FRE + 'FreeSerif.ttf',
+    'Greek-Bold': FRE + 'FreeSerifBold.ttf',
+    'Greek-Italic': FRE + 'FreeSerifItalic.ttf',
+    'Greek-BoldItalic': FRE + 'FreeSerifBoldItalic.ttf',
     'Sym': DJV + 'DejaVuSans.ttf',
     'Sym-Bold': DJV + 'DejaVuSans-Bold.ttf',
     'Sym-Italic': DJV + 'DejaVuSans.ttf',
@@ -28,15 +48,18 @@ for _name, _path in _FONTS.items():
         pdfmetrics.registerFont(TTFont(_name, _path))
 _ARIAL_CMAP = pdfmetrics.getFont('Arial').face.charToGlyph
 # characters Liberation Sans maps but draws as an empty box
-_FORCE_SYM = set('∝⇌→')    # → is also too small in Liberation Sans
+_FORCE_SYM = set('∝⇌')
+# set in the Greek (Symbol-style) face: Greek letters except Δ, and these signs
+_GREEK = {chr(c) for c in range(0x3b1, 0x3ca)} | set('ΓΘΛΞΠΣΦΨΩϕϑϵµ±≈∝⟨⟩')
 
-SUP_SIZE = 8.0     # superscripts and subscripts in 11 pt text
+SUP_SIZE = 8.0     # superscripts in 11 pt text (measured from 9702_s25_qp_42)
 SUP_RISE = 3.85
-SUB_RISE = -2.6
+SUB_SIZE = 7.7     # subscripts sit lower and a little smaller
+SUB_RISE = -3.5
 
 
 def font_name(bold=False, italic=False, sym=False):
-    base = 'Sym' if sym else 'Arial'
+    base = sym if isinstance(sym, str) else ('Sym' if sym else 'Arial')
     if bold and italic:
         return base + '-BoldItalic'
     if bold:
@@ -100,11 +123,14 @@ def _emit(out, text, st, size):
     if st['sup']:
         sz, rise = size * SUP_SIZE / 11, size * SUP_RISE / 11
     elif st['sub']:
-        sz, rise = size * SUP_SIZE / 11, size * SUB_RISE / 11
-    # split into runs of characters Arial can and cannot show
+        sz, rise = size * SUB_SIZE / 11, size * SUB_RISE / 11
+    # split into runs by face: Arial, the Greek face, or the symbol fallback
     cur, cur_sym = '', None
     for ch in text:
-        sym = (ord(ch) not in _ARIAL_CMAP or ch in _FORCE_SYM) and ch not in '\n'
+        if ch in _GREEK or (ch == 'I' and st['i']):
+            sym = 'Greek'       # italic I (current) is set with serifs, as Cambridge does
+        else:
+            sym = (ord(ch) not in _ARIAL_CMAP or ch in _FORCE_SYM) and ch not in '\n'
         if cur and sym != cur_sym:
             out.append(Run(cur, font_name(st['b'], st['i'], cur_sym), sz, rise, st['u']))
             cur = ''
@@ -268,6 +294,12 @@ class Sqrt:
         self.items = items
 
 
+class Low:
+    """Subscript holding math items (e.g. the small stacked ½ of t½)."""
+    def __init__(self, *items):
+        self.items = items
+
+
 class Sup:
     """Superscript holding math items (e.g. an exponent fraction)."""
     def __init__(self, *items):
@@ -291,8 +323,13 @@ def math_box(items, size=11.0):
     return Box(w, asc, desc, draw)
 
 
+EQ_SPACE = '\u2002'   # en space either side of = in displayed equations
+
+
 def _item_box(it, size):
     if isinstance(it, str):
+        for sign in ('=', '≈'):
+            it = it.replace(f' {sign} ', f'{EQ_SPACE}{sign}{EQ_SPACE}')
         rs = runs(it, size)
         w = runs_width(rs)
         asc = size * 0.72 + max([r.rise for r in rs] + [0])
@@ -317,18 +354,27 @@ def _item_box(it, size):
         ib = math_box(it.items, size)
 
         def draw(c, x, y):
-            top = y + ib.asc + 1.5
-            bot = y - ib.desc
-            c.setLineWidth(0.9)
+            # Cambridge's radical: hairline tick and bar, heavy downstroke
+            top = y + ib.asc + 1.2
+            bot = y - ib.desc - 0.4
+            k = (x + 1.6, y + 0.42 * ib.asc)
+            d = (x + 4.4, bot)
+            c.saveState()
+            c.setLineCap(1)
+            c.setLineWidth(0.6)
+            c.line(x, y + 0.36 * ib.asc, *k)
+            c.setLineWidth(1.5)
+            c.line(*k, *d)
+            c.setLineWidth(0.6)
+            c.setLineJoin(0)
             p = c.beginPath()
-            p.moveTo(x, y + 0.35 * ib.asc)
-            p.lineTo(x + 2.0, y + 0.45 * ib.asc)
-            p.lineTo(x + 4.5, bot)
-            p.lineTo(x + 8.0, top)
-            p.lineTo(x + 10.0 + ib.w, top)
+            p.moveTo(*d)
+            p.lineTo(x + 8.4, top)
+            p.lineTo(x + 9.6 + ib.w, top)
             c.drawPath(p, stroke=1, fill=0)
-            ib.draw(c, x + 9.0, y)
-        return Box(ib.w + 11.0, ib.asc + 2.0, ib.desc + 0.5, draw)
+            c.restoreState()
+            ib.draw(c, x + 9.2, y)
+        return Box(ib.w + 10.4, ib.asc + 2.0, ib.desc + 0.5, draw)
     if isinstance(it, Sup):
         fs = size * 0.7
         ib = math_box(it.items, fs)
@@ -337,6 +383,14 @@ def _item_box(it, size):
         def draw(c, x, y):
             ib.draw(c, x, y + rise)
         return Box(ib.w, rise + ib.asc, 0, draw)
+    if isinstance(it, Low):
+        fs = size * 0.7
+        ib = math_box(it.items, fs)
+        drop = size * 0.30
+
+        def draw(c, x, y):
+            ib.draw(c, x, y - drop)
+        return Box(ib.w, max(0, ib.asc - drop), ib.desc + drop, draw)
     if isinstance(it, Box):
         return it
     raise TypeError(f'unknown math item {it!r}')

@@ -212,8 +212,13 @@ MS = [
 
 ```
 cd /home/user/On-IT/tools/physics_papers
+./get_arial.sh                # once: fetches Arial into fonts/ (not committed)
 python3 build.py 1 --png      # builds paper 1 (use 2 or 3 for the others)
 ```
+
+Text is set in Arial, as on Cambridge papers. Greek letters, ±, ≈ and the
+serifed italic *I* (current) use FreeSerif, standing in for the Symbol face
+Cambridge uses.
 
 This writes `physics-practice-papers/9702 Practice Paper N.pdf` and
 `... - mark scheme.pdf`, prints pages per question, and prints a PROBLEM

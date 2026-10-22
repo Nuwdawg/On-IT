@@ -13,12 +13,12 @@ from reportlab.lib.pagesizes import A4, landscape
 from reportlab.pdfgen import canvas as rl_canvas
 
 import codes
-from richtext import (Box, Frac, Sqrt, Sup, draw_line, draw_rich, draw_runs,
+from richtext import (EQ_SPACE, Box, Frac, Low, Sqrt, Sup, draw_line, draw_rich, draw_runs,
                       line_width, math_box, runs, runs_width, width, wrap)
 
 __all__ = ['Paper', 'Question', 'Part', 'Sub', 'Text', 'Lines', 'Space',
            'Answer', 'Mark', 'Fig', 'FigRow', 'Table', 'Eq', 'Frac', 'Sqrt',
-           'Sup', 'PageBreak', 'MSRow']
+           'Sup', 'Low', 'PageBreak', 'MSRow']
 
 # ------------------------------------------------------------------ content
 
@@ -605,9 +605,9 @@ class QPDoc:
             rb = math_box(rhs_items)
             base = y_(top + BASE)
             box.draw(c, lhs_r - box.w, base)
-            eqw = width(' = ', 'Arial', 11)
-            draw_rich(c, lhs_r, base, ' = ')
-            rb.draw(c, lhs_r + eqw, base)
+            eq = math_box([f'{EQ_SPACE}={EQ_SPACE}'])
+            eq.draw(c, lhs_r, base)
+            rb.draw(c, lhs_r + eq.w, base)
 
         for k, (lbl, lhs, rhs) in enumerate(rows2):
             row(lbl, 91.8 + 26 * k, lhs, [rhs])
@@ -636,8 +636,9 @@ class QPDoc:
             rb = math_box(rhs)
             base = y_(top + BASE)
             lb.draw(c, r - lb.w, base)
-            draw_rich(c, r, base, ' = ')
-            rb.draw(c, r + width(' = ', 'Arial', 11), base)
+            eq = math_box([f'{EQ_SPACE}={EQ_SPACE}'])
+            eq.draw(c, r, base)
+            rb.draw(c, r + eq.w, base)
 
         e0 = '<i>ε</i><sub>0</sub>'
         row('gravitational potential', 71.2, '<i>ϕ</i>', ['– ', Frac('<i>GM</i>', '<i>r</i>')])
@@ -657,7 +658,7 @@ class QPDoc:
         row('Hall voltage', 432.9, '<i>V</i><sub>H</sub>', [Frac('<i>BI</i>', '<i>ntq</i>')])
         row('alternating current/voltage', 463.2, '<i>x</i>', ['<i>x</i><sub>0</sub> sin <i>ωt</i>'])
         row('radioactive decay', 489.2, '<i>x</i>', ['<i>x</i><sub>0</sub>e<sup>–<i>λt</i></sup>'])
-        row('decay constant', 522.5, '<i>λ</i>', [Frac('0.693', '<i>t</i><sub>½</sub>')])
+        row('decay constant', 522.5, '<i>λ</i>', [Frac('0.693', ['<i>t</i>', Low(Frac('1', '2', small=True))])])
         row('intensity reflection coefficient', 570.9, [Frac('<i>I</i><sub>R</sub>', '<i>I</i><sub>0</sub>')],
             [Frac('(<i>Z</i><sub>1</sub> – <i>Z</i><sub>2</sub>)<sup>2</sup>', '(<i>Z</i><sub>1</sub> + <i>Z</i><sub>2</sub>)<sup>2</sup>')])
         row('Stefan–Boltzmann law', 606.9, '<i>L</i>', ['4π<i>σr</i><sup>2</sup><i>T</i><sup>4</sup>'])
@@ -666,7 +667,7 @@ class QPDoc:
         base = y_(640.3 + BASE)
         lb = math_box([Frac('Δ<i>λ</i>', '<i>λ</i>')])
         lb.draw(c, r - lb.w, base)
-        rb = math_box([' ≈ ', Frac('Δ<i>f</i>', '<i>f</i>'), ' ≈ ', Frac('<i>v</i>', '<i>c</i>')])
+        rb = math_box([' ≈ ', Frac('Δ<i>f</i>', '<i>f</i>'), ' ≈ ', Frac('<i>v</i>', '<i>c</i>')])  # en-spaced by math_box
         rb.draw(c, r, base)
 
     # ---------------------------------------------------------- build

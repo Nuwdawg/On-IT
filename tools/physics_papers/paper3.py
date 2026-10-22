@@ -271,7 +271,7 @@ def fig_2_1(c):
 def fig_2_2(c):
     g = Graph(c, 80, 32, _sq(40), _sq(40), xr=(-300, 100), yr=(0, 160), xmajor=50, ymajor=20,
               minor=5, axes=False)
-    _lb_axes(c, g, _ticks(-300, 100, 100), _ticks(0, 160, 20), 'θ / °C', '<i>p</i> / kPa')
+    _lb_axes(c, g, _ticks(-300, 100, 100), _ticks(0, 160, 20), '<i>θ</i> / °C', '<i>p</i> / kPa')
     for th in (0, 20, 40, 60, 80, 100):
         g.mark(th, 55.0 * (th + 273.15) / 273.15)
 
@@ -286,7 +286,7 @@ Q2 = Question([
              'that may be assumed to be ideal.'),
         Fig(380, 150, fig_2_1, 'Fig. 2.1'),
         Text('The volume of the gas is kept constant. The bulb is placed in water at different Celsius '
-             'temperatures θ and the pressure <i>p</i> of the gas is measured. The results are shown in '
+             'temperatures <i>θ</i> and the pressure <i>p</i> of the gas is measured. The results are shown in '
              'Fig. 2.2.'),
         Fig(330, 264, fig_2_2, 'Fig. 2.2'),
         Sub('i', [
@@ -298,7 +298,7 @@ Q2 = Question([
         Sub('ii', [
             Text('The bulb is emptied and then filled with twice the number of molecules of the same gas. The '
                  'volume of the bulb is unchanged.'),
-            Text('On Fig. 2.2, draw a line to show the variation with θ of <i>p</i> for this gas for temperatures '
+            Text('On Fig. 2.2, draw a line to show the variation with <i>θ</i> of <i>p</i> for this gas for temperatures '
                  'from –273 °C to 100 °C.'),
             Mark(2),
         ]),
@@ -411,8 +411,7 @@ Q3 = Question([
              '<i>V</i> is a straight line.'),
         Text('Table 3.1 shows some of the energy changes during the cycle. <i>W</i> is the work done <b>on</b> '
              'the gas, <i>q</i> is the thermal energy supplied <b>to</b> the gas and Δ<i>U</i> is the increase in '
-             'internal energy of the gas.'),
-        Text('Complete Table 3.1.'),
+             'internal energy of the gas. Complete Table 3.1.'),
         Table([
             ['change', '<i>W</i> / J', '<i>q</i> / J', 'Δ<i>U</i> / J'],
             ['A → B', '+200', '–500', ''],
@@ -1217,11 +1216,11 @@ MS9 = [
     MSRow('9(a)(i)', [
         ('<i>p</i> = √(2<i>m</i><sub>e</sub><i>eV</i>) = √(2 × 9.11 × 10<sup>–31</sup> × 1.60 × 10<sup>–19</sup> '
          '× 4000) = 3.4 × 10<sup>–23</sup> N s', 'C1'),
-        ('λ = <i>h</i> / <i>p</i> = 6.63 × 10<sup>–34</sup> / 3.4 × 10<sup>–23</sup> = 1.9 × 10<sup>–11</sup> m',
+        ('<i>λ</i> = <i>h</i> / <i>p</i> = 6.63 × 10<sup>–34</sup> / 3.4 × 10<sup>–23</sup> = 1.9 × 10<sup>–11</sup> m',
          'A1'),
     ]),
     MSRow('9(a)(ii)', [
-        ('<i>p</i> is proportional to √<i>V</i> so λ is proportional to 1 / √<i>V</i>: the wavelength '
+        ('<i>p</i> is proportional to √<i>V</i> so <i>λ</i> is proportional to 1 / √<i>V</i>: the wavelength '
          'halves (it does not decrease to one quarter)', 'B1'),
         ('angle of diffraction (approximately) proportional to wavelength, so the radius of each ring '
          '(approximately) halves', 'B1'),
@@ -1231,7 +1230,7 @@ MS9 = [
     ]),
     MSRow('9(b)(ii)', [
         ('longest wavelength from the smallest energy difference: –3.7 – (–5.5) = 1.8 eV', 'C1'),
-        ('λ = <i>hc</i> / Δ<i>E</i> = (6.63 × 10<sup>–34</sup> × 3.00 × 10<sup>8</sup>) / (1.8 × 1.60 × '
+        ('<i>λ</i> = <i>hc</i> / Δ<i>E</i> = (6.63 × 10<sup>–34</sup> × 3.00 × 10<sup>8</sup>) / (1.8 × 1.60 × '
          '10<sup>–19</sup>) = 6.9 × 10<sup>–7</sup> m', 'A1'),
     ], note='the 2.1 eV transition between the two highest levels (5.9 × 10<sup>–7</sup> m) scores 0'),
     MSRow('9(c)(i)', [
@@ -1350,7 +1349,7 @@ MS10 = [
         ('distance from M = <i>c</i>Δ<i>t</i> / 2 = 0.060 m (on the D<sub>1</sub> side of M)', 'A1'),
     ], note='0.12 m scores 1 mark'),
     MSRow('10(b)(i)', [
-        ('Δλ / λ = <i>v</i> / <i>c</i>, where λ is the emitted (laboratory) wavelength', 'C1'),
+        ('Δ<i>λ</i> / <i>λ</i> = <i>v</i> / <i>c</i>, where <i>λ</i> is the emitted (laboratory) wavelength', 'C1'),
         ('<i>v</i> = 3.00 × 10<sup>8</sup> × (689.1 – 656.3) / 656.3 = 1.50 × 10<sup>7</sup> m s<sup>–1</sup>',
          'A1'),
     ], note='689.1 nm in the denominator (1.43 × 10<sup>7</sup> m s<sup>–1</sup>) scores 1 mark'),
