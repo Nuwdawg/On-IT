@@ -115,9 +115,9 @@ def fig_1_1(c):
 
 
 def fig_1_2(c):
-    cx, cy, Re = 190, 84, 28
+    cx, cy, Re = 190, 75, 28
     ang = math.radians(30)
-    a, b = 150, 17
+    a, b = 140, 17
     # plane of the equator
     line(c, 15, cy, 365, cy, dash=[5, 3])
     text(c, 365, cy - 15, 'plane of equator', anchor='r')
@@ -131,7 +131,7 @@ def fig_1_2(c):
     text(c, cx, cy - Re - 26, 'S', anchor='c')
     text(c, cx - 3, cy + 7, 'Earth', size=8, anchor='r')
     # plane of the orbit, and the angle between it and the plane of the equator
-    line(c, cx, cy, cx + (a + 25) * math.cos(ang), cy + (a + 25) * math.sin(ang), w=0.5, dash=[5, 3])
+    line(c, cx, cy, cx + (a + 10) * math.cos(ang), cy + (a + 10) * math.sin(ang), w=0.5, dash=[5, 3])
     pts = [(cx + 105 * math.cos(t), cy + 105 * math.sin(t)) for t in [ang * k / 30 for k in range(31)]]
     polyline(c, pts, w=0.6)
     text(c, cx + 112 * math.cos(ang / 2), cy + 112 * math.sin(ang / 2) - 4, '30°')
@@ -140,7 +140,7 @@ def fig_1_2(c):
     xs, ys = (cx + a * math.cos(t) * math.cos(ang) - b * math.sin(t) * math.sin(ang),
               cy + a * math.cos(t) * math.sin(ang) + b * math.sin(t) * math.cos(ang))
     dot(c, xs, ys, 4)
-    text(c, xs - 4, ys - 16, 'X', anchor='c')
+    text(c, xs - 8, ys - 4, 'X', anchor='r')
     # direction of motion on the front half
     p = _ellipse(cx, cy, a, b, ang, -1.75, -1.45, n=4)
     arrow(c, p[0][0], p[0][1], p[-1][0], p[-1][1])
@@ -170,7 +170,7 @@ Q1 = Question([
             Text('A satellite X moves in a circular orbit that has the radius calculated in (b)(i). X moves '
                  'around the Earth in the same direction as the Earth rotates. The plane of the orbit of X is at '
                  'an angle of 30° to the plane of the equator, as shown in Fig. 1.2.'),
-            Fig(380, 168, fig_1_2, 'Fig. 1.2', note='(not to scale)'),
+            Fig(380, 150, fig_1_2, 'Fig. 1.2', note='(not to scale)'),
             Text('A student states that X is a geostationary satellite because its orbital period is 24.0 hours. '
                  'Explain why the student is wrong.'),
             Lines(3, 2),
@@ -267,7 +267,7 @@ def fig_2_1(c):
 
 
 def fig_2_2(c):
-    g = Graph(c, 80, 40, _sq(40), _sq(40), xr=(-300, 100), yr=(0, 160), xmajor=50, ymajor=20,
+    g = Graph(c, 80, 32, _sq(40), _sq(40), xr=(-300, 100), yr=(0, 160), xmajor=50, ymajor=20,
               minor=5, axes=False)
     _lb_axes(c, g, _ticks(-300, 100, 100), _ticks(0, 160, 20), 'θ / °C', '<i>p</i> / kPa')
     for th in (0, 20, 40, 60, 80, 100):
@@ -282,11 +282,11 @@ Q2 = Question([
     Part('b', [
         Text('A constant-volume gas thermometer is shown in Fig. 2.1. The bulb contains a fixed mass of a gas '
              'that may be assumed to be ideal.'),
-        Fig(380, 160, fig_2_1, 'Fig. 2.1'),
+        Fig(380, 150, fig_2_1, 'Fig. 2.1'),
         Text('The volume of the gas is kept constant. The bulb is placed in water at different Celsius '
              'temperatures θ and the pressure <i>p</i> of the gas is measured. The results are shown in '
              'Fig. 2.2.'),
-        Fig(330, 270, fig_2_2, 'Fig. 2.2'),
+        Fig(330, 264, fig_2_2, 'Fig. 2.2'),
         Sub('i', [
             Text('On Fig. 2.2, draw the best-fit line for the points and extend it to determine the Celsius '
                  'temperature at which the pressure of the gas would be zero.'),
@@ -604,8 +604,8 @@ def _contour(level, n=180):
 
 
 def fig_5_1(c):
-    s = 2800.0                       # points per metre (28 pt per cm)
-    ox, oz = 190, 32                 # plate surface at the centre of the figure
+    s = 2400.0                       # points per metre (24 pt per cm)
+    ox, oz = 190, 28                 # plate surface at the centre of the figure
     P = lambda x, z: (ox + s * x, oz + s * z)
     # earthed plate
     rect(c, ox - 165, oz - 6, 330, 6, lw=0.9, fill=0.6)
@@ -623,7 +623,7 @@ def fig_5_1(c):
     for lev, deg in ((750, 78), (500, 20), (250, -14)):
         x, z = _contour(lev, n=360)[deg % 360]
         px, pz = P(x, z)
-        tx = ox + 118
+        tx = ox + 106
         line(c, px, pz, tx - 4, pz, w=0.5)
         text(c, tx, pz - 3.9, f'+{lev} V')
     # line XY
@@ -655,20 +655,19 @@ def fig_5_1(c):
 
 
 def fig_5_2(c):
-    g = Graph(c, 70, 38, _sq(40), _sq(25), xr=(0, 4.0), yr=(0, 1000), xmajor=0.5, ymajor=200, minor=5,
+    g = Graph(c, 70, 29, _sq(40), _sq(20), xr=(0, 4.0), yr=(0, 1000), xmajor=0.5, ymajor=250, minor=5,
               xlabel='<i>x</i> / cm', ylabel='<i>V</i> / V',
               xticks=[(v, '%.1f' % v if v else '0') for v in (0, 1, 2, 3, 4)],
-              yticks=[(v, str(v)) for v in range(0, 1001, 200)])
+              yticks=[(v, str(v)) for v in range(0, 1001, 250)])
     g.curve(lambda xc: _pot(0, xc / 100), 0, 4.0, w=1.2)
     g.finish()
 
 
 Q5 = Question([
-    Text('An isolated metal sphere S is held above a large horizontal metal plate. The plate is earthed. The '
-         'sphere is charged so that its electric potential is +1000 V.'),
-    Text('Fig. 5.1 shows the lines of equal electric potential (equipotential lines) for potentials of +750 V, '
-         '+500 V and +250 V in the region around the sphere.'),
-    Fig(400, 300, fig_5_1, 'Fig. 5.1'),
+    Text('An isolated metal sphere S is held above a large horizontal metal plate that is earthed. The sphere '
+         'is charged so that its electric potential is +1000 V. Fig. 5.1 shows the lines of equal electric '
+         'potential (equipotential lines) for potentials of +750 V, +500 V and +250 V around the sphere.'),
+    Fig(400, 232, fig_5_1, 'Fig. 5.1'),
     Part('a', [
         Sub('i', [
             Text('On Fig. 5.1, draw an arrow at point P to show the direction of the electric field at P.'),
@@ -676,20 +675,18 @@ Q5 = Question([
         ]),
         Sub('ii', [
             Text('Points P and Q lie on the same equipotential line. A small positive charge is moved from P to Q '
-                 'along the dotted path shown in Fig. 5.1.'),
-            Text('State and explain the total work done on the charge by the electric field.'),
+                 'along the dotted path shown in Fig. 5.1. State and explain the total work done on the charge by '
+                 'the electric field.'),
             Lines(3, 2),
         ]),
     ]),
     Part('b', [
-        Text('Point X is on the surface of the plate and point Y is on the surface of the sphere, vertically above '
-             'X. Fig. 5.2 shows the variation of the electric potential <i>V</i> with distance <i>x</i> from X '
-             'along the line XY.'),
-        Fig(330, 205, fig_5_2, 'Fig. 5.2'),
+        Text('Point X is on the plate and point Y is on the sphere, vertically above X. Fig. 5.2 shows the '
+             'variation of the electric potential <i>V</i> with distance <i>x</i> from X along XY.'),
+        Fig(330, 148, fig_5_2, 'Fig. 5.2'),
         Sub('i', [
             Text('A student states that the electric field strength at X is zero because the electric potential '
-                 'at X is zero.'),
-            Text('Use Fig. 5.2 to explain why the student is wrong.'),
+                 'at X is zero. Use Fig. 5.2 to explain why the student is wrong.'),
             Lines(3, 2),
         ]),
         Sub('ii', [
@@ -700,8 +697,8 @@ Q5 = Question([
             Answer('number', '', 3),
         ]),
         Sub('iii', [
-            Text('The charge on the sphere is now doubled. The droplet is initially at rest at the same point.'),
-            Text('Determine the magnitude and the direction of the initial acceleration of the droplet.'),
+            Text('The charge on the sphere is now doubled. The droplet is initially at rest at the same point. '
+                 'Determine the magnitude and the direction of the initial acceleration of the droplet.'),
             Space(4),
             Answer('magnitude', 'm s<sup>–2</sup>', None),
             Answer('direction', '', 2),
@@ -742,28 +739,28 @@ MS5 = [
 
 def fig_6_1(c):
     # plates
-    xl, xr, y0, y1 = 165, 205, 35, 115
+    xl, xr, y0, y1 = 165, 205, 35, 100
     line(c, xl, y0, xl, y1, w=2.6)
     line(c, xr, y0, xr, y1, w=2.6)
     darrow(c, xl, y1 + 10, xr, y1 + 10, head=5)
     text(c, (xl + xr) / 2, y1 + 15, '<i>d</i>', anchor='c')
     # circuit
-    wire(c, [(xl, 75), (70, 75), (70, 15), (120, 15)])
+    wire(c, [(xl, 68), (70, 68), (70, 15), (120, 15)])
     cell(c, 120, 15, 160, 15)
     wire(c, [(160, 15), (215, 15)])
     switch(c, 215, 15, 255, 15)
-    wire(c, [(255, 15), (300, 15), (300, 75), (xr, 75)])
+    wire(c, [(255, 15), (300, 15), (300, 68), (xr, 68)])
     text(c, 140, 32, '12 V', anchor='c')
     text(c, 235, 30, 'S', anchor='c')
     text(c, xr + 12, y1 - 6, 'metal plates')
 
 
 def fig_6_2(c):
-    g = Graph(c, 70, 38, _sq(50), _sq(30), xr=(0, 10), yr=(0, 3.0), xmajor=1, ymajor=0.5, minor=5,
+    g = Graph(c, 70, 32, _sq(50), _sq(25), xr=(0, 10), yr=(0, 2.5), xmajor=1, ymajor=0.5, minor=5,
               xlabel='<i>t</i> / s', ylabel='ln (<i>V</i> / V)',
               xticks=[(v, str(v)) for v in range(0, 11, 2)],
-              yticks=[(v, '%.1f' % v if v else '0') for v in (0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0)])
-    f = lambda t: math.log(12.0) - t / 4.7
+              yticks=[(v, '%.1f' % v if v else '0') for v in (0, 0.5, 1.0, 1.5, 2.0, 2.5)])
+    f = lambda t: math.log(10.0) - t / 4.7
     g.line(0, f(0), 10, f(10), w=1.2)
     g.finish()
 
@@ -776,7 +773,7 @@ Q6 = Question([
     Part('b', [
         Text('A parallel plate capacitor is connected to a battery of electromotive force (e.m.f.) 12 V and a '
              'switch S, as shown in Fig. 6.1.'),
-        Fig(330, 135, fig_6_1, 'Fig. 6.1'),
+        Fig(330, 120, fig_6_1, 'Fig. 6.1'),
         Text('The capacitance of the capacitor is inversely proportional to the separation of its plates. The '
              'plates are initially a distance <i>d</i> apart and the capacitor is fully charged. Two separate '
              'experiments are carried out, each starting from this initial state.'),
@@ -793,7 +790,7 @@ Q6 = Question([
                 ['magnitude of charge on each plate', '', ''],
                 ['potential difference between plates', '', ''],
                 ['energy stored', '', ''],
-            ], [200, 110, 110], 'Table 6.1', row_heights=[36, 26, 30, 30, 30]),
+            ], [200, 110, 110], 'Table 6.1', row_heights=[34, 24, 28, 28, 28]),
             Mark(3),
         ]),
         Sub('ii', [
@@ -803,11 +800,10 @@ Q6 = Question([
         ]),
     ]),
     Part('c', [
-        Text('A capacitor of capacitance 470 μF is charged to a potential difference (p.d.) of 12.0 V. It is '
-             'then discharged through a resistor of resistance <i>R</i>.'),
-        Text('Fig. 6.2 shows the variation with time <i>t</i> of ln (<i>V</i> / V), where <i>V</i> is the p.d. '
-             'across the capacitor.'),
-        Fig(380, 225, fig_6_2, 'Fig. 6.2'),
+        Text('A capacitor of capacitance 470 μF is charged to a potential difference (p.d.) of 10.0 V. It is '
+             'then discharged through a resistor of resistance <i>R</i>. Fig. 6.2 shows the variation with time '
+             '<i>t</i> of ln (<i>V</i> / V), where <i>V</i> is the p.d. across the capacitor.'),
+        Fig(380, 184, fig_6_2, 'Fig. 6.2'),
         Sub('i', [
             Text('Use Fig. 6.2 to determine <i>R</i>.'),
             Space(8),
@@ -838,7 +834,7 @@ MS6 = [
          'decrease in stored energy are transferred to the battery', 'B1'),
     ]),
     MSRow('6(c)(i)', [
-        ('gradient = –1 / <i>RC</i><br/>gradient = –(2.48 – 0.36) / 10 = –0.21 s<sup>–1</sup>', 'C1'),
+        ('gradient = –1 / <i>RC</i><br/>gradient = –(2.30 – 0.18) / 10 = –0.21 s<sup>–1</sup>', 'C1'),
         ('<i>R</i> = 1 / (0.213 × 470 × 10<sup>–6</sup>) = 1.0 × 10<sup>4</sup> Ω', 'A1'),
     ]),
     MSRow('6(c)(ii)', [
@@ -863,68 +859,70 @@ def _flux(t_ms):
 def fig_7_1(c):
     cx = 120
     # coil: loops on a vertical former
-    ys = [30 + 8 * k for k in range(8)]
+    ys = [22 + 8 * k for k in range(7)]
     for y in ys:
         polyline(c, _ellipse(cx, y, 34, 6, 0, 0, math.pi), w=0.5)
-    line(c, cx - 34, 30, cx - 34, ys[-1], w=0.6)
-    line(c, cx + 34, 30, cx + 34, ys[-1], w=0.6)
+    line(c, cx - 34, ys[0], cx - 34, ys[-1], w=0.6)
+    line(c, cx + 34, ys[0], cx + 34, ys[-1], w=0.6)
     for y in ys:
         polyline(c, _ellipse(cx, y, 34, 6, 0, math.pi, 2 * math.pi), w=1.0)
     # leads to the resistor
-    wire(c, [(cx + 34, ys[-1]), (240, ys[-1]), (240, 80)])
-    resistor(c, 240, 80, 240, 40, label='resistor')
-    wire(c, [(240, 40), (240, 30), (cx + 34, 30)])
+    wire(c, [(cx + 34, ys[-1]), (240, ys[-1]), (240, 66)])
+    resistor(c, 240, 66, 240, 30, label='resistor')
+    wire(c, [(240, 30), (240, ys[0]), (cx + 34, ys[0])])
     # magnet above the coil
-    rect(c, cx - 9, 115, 18, 60, lw=1.0, fill=1)
-    line(c, cx - 9, 145, cx + 9, 145)
-    text(c, cx, 125, 'N', anchor='c')
-    text(c, cx, 155, 'S', anchor='c')
-    arrow(c, cx - 30, 160, cx - 30, 125)
-    text(c, cx + 18, 160, 'magnet')
-    text(c, cx - 50, 40, 'coil', anchor='r')
-    line(c, cx - 48, 44, cx - 36, 52, w=0.5)
+    rect(c, cx - 9, 92, 18, 52, lw=1.0, fill=1)
+    line(c, cx - 9, 118, cx + 9, 118)
+    text(c, cx, 101, 'N', anchor='c')
+    text(c, cx, 127, 'S', anchor='c')
+    arrow(c, cx - 30, 136, cx - 30, 104)
+    text(c, cx + 18, 132, 'magnet')
+    text(c, cx - 50, 30, 'coil', anchor='r')
+    line(c, cx - 48, 34, cx - 36, 42, w=0.5)
 
 
 def fig_7_2(c):
-    g = Graph(c, 60, 38, _sq(75), _sq(25), xr=(0, 150), yr=(0, 10), xmajor=10, ymajor=2, minor=5,
+    g = Graph(c, 60, 30, _sq(75), _sq(20), xr=(0, 150), yr=(0, 10), xmajor=10, ymajor=2.5, minor=5,
               xlabel='<i>t</i> / ms', ylabel='<i>N</i>Φ / mWb',
-              xticks=[(v, str(v)) for v in range(0, 151, 20)])
+              xticks=[(v, str(v)) for v in range(0, 151, 20)],
+              yticks=[(v, '%.1f' % v if v else '0') for v in (0, 2.5, 5.0, 7.5, 10.0)])
     g.curve(_flux, 0, 150, n=400, w=1.2)
     g.finish()
 
 
 def fig_7_3(c):
-    g = Graph(c, 60, 10, _sq(75), _sq(22), xr=(0, 150), yr=(-1, 1), xmajor=10, ymajor=1, minor=5,
+    g = Graph(c, 60, 4, _sq(75), _sq(18), xr=(0, 150), yr=(-1, 1), xmajor=10, ymajor=1, minor=5,
               grid=False, xlabel='<i>t</i> / ms', ylabel='<i>E</i>',
               xticks=[(v, str(v) if v else '') for v in range(0, 151, 20)], yticks=[(0, '0')])
     g.finish()
 
 
 def fig_7_4(c):
-    x0, y0, w, h = 90, 40, 170, 64
+    x0, y0, w, h = 90, 20, 170, 42
+    ym = y0 + h / 2
     rect(c, x0, y0, w, h, lw=1.0, fill=0.92)
     for i in range(5):
         for j in range(2):
-            px, py = x0 + 25 + 30 * i, y0 + 18 + 28 * j
+            px, py = x0 + 25 + 30 * i, y0 + 11 + 20 * j
             line(c, px - 3, py - 3, px + 3, py + 3, w=0.6)
             line(c, px - 3, py + 3, px + 3, py - 3, w=0.6)
     # current leads
-    line(c, 20, y0 + h / 2, x0, y0 + h / 2)
-    arrow(c, 35, y0 + h / 2, 62, y0 + h / 2)
-    text(c, 48, y0 + h / 2 + 6, '<i>I</i>', anchor='c')
-    line(c, x0 + w, y0 + h / 2, 330, y0 + h / 2)
-    arrow(c, 290, y0 + h / 2, 317, y0 + h / 2)
-    text(c, 303, y0 + h / 2 + 6, '<i>I</i>', anchor='c')
+    line(c, 20, ym, x0, ym)
+    arrow(c, 35, ym, 62, ym)
+    text(c, 48, ym + 6, '<i>I</i>', anchor='c')
+    line(c, x0 + w, ym, 330, ym)
+    arrow(c, 290, ym, 317, ym)
+    text(c, 303, ym + 6, '<i>I</i>', anchor='c')
     # Hall voltage leads to a voltmeter
     xm = x0 + w / 2
-    wire(c, [(xm, y0 + h), (xm, 132), (370, 132), (370, 81)])
-    meter(c, 370, 72, 'V')
-    wire(c, [(370, 63), (370, 14), (xm, 14), (xm, y0)])
+    wire(c, [(xm, y0 + h), (xm, 78), (370, 78), (370, ym + 9)])
+    meter(c, 370, ym, 'V')
+    wire(c, [(370, ym - 9), (370, 4), (xm, 4), (xm, y0)])
     dot(c, xm, y0 + h, 1.8)
     dot(c, xm, y0, 1.8)
-    text(c, xm - 6, y0 + h + 6, 'P', anchor='r')
-    text(c, xm - 6, y0 - 15, 'Q', anchor='r')
-    text(c, x0 + w + 6, y0 + h + 6, 'slice')
+    text(c, xm - 6, y0 + h + 5, 'P', anchor='r')
+    text(c, xm - 6, y0 - 11, 'Q', anchor='r')
+    text(c, x0 + w + 6, y0 + h + 5, 'slice')
 
 
 Q7 = Question([
@@ -935,14 +933,14 @@ Q7 = Question([
     Part('b', [
         Text('A bar magnet is held vertically above a coil of wire, as shown in Fig. 7.1. The coil is connected '
              'to a resistor.'),
-        Fig(300, 185, fig_7_1, 'Fig. 7.1'),
+        Fig(300, 150, fig_7_1, 'Fig. 7.1'),
         Text('The magnet is released from rest at time <i>t</i> = 0 and falls through the coil. Fig. 7.2 shows '
              'the variation with <i>t</i> of the magnetic flux linkage <i>N</i>Φ of the coil.'),
-        Fig(490, 200, fig_7_2, 'Fig. 7.2'),
+        Fig(490, 152, fig_7_2, 'Fig. 7.2'),
         Sub('i', [
             Text('On Fig. 7.3, sketch the variation with <i>t</i> of the electromotive force (e.m.f.) <i>E</i> '
                  'induced in the coil.'),
-            Fig(490, 140, fig_7_3, 'Fig. 7.3'),
+            Fig(490, 106, fig_7_3, 'Fig. 7.3'),
             Mark(3),
         ]),
         Sub('ii', [
@@ -952,16 +950,14 @@ Q7 = Question([
         ]),
     ]),
     Part('c', [
-        Text('Fig. 7.4 shows a thin rectangular slice of a conductor. There is a current <i>I</i> in the slice. '
-             'A uniform magnetic field is directed into the plane of the page, normal to the face of the slice. '
-             'A Hall voltage is measured between points P and Q. The charge carriers in the slice are '
-             'electrons.'),
-        Fig(400, 145, fig_7_4, 'Fig. 7.4'),
+        Text('Fig. 7.4 shows a thin slice of a conductor carrying a current <i>I</i> in a uniform magnetic '
+             'field directed into the page. The Hall voltage is measured between points P and Q. The charge '
+             'carriers in the slice are electrons.'),
+        Fig(400, 82, fig_7_4, 'Fig. 7.4'),
         Text('The slice is replaced by a slice with the same dimensions made of a material in which the charge '
              'carriers are positive. The number density of the charge carriers in the new slice is one quarter '
-             'of that in the original slice. The current and the magnetic field are unchanged.'),
-        Text('State and explain <b>two</b> differences between the Hall voltage across the new slice and the '
-             'Hall voltage across the original slice.'),
+             'of that in the original slice. The current and the magnetic field are unchanged. State and '
+             'explain <b>two</b> differences between the new Hall voltage and the original Hall voltage.'),
         Lines(4, 3),
     ]),
 ])
@@ -1151,7 +1147,7 @@ def fig_9_1(c):
 def fig_9_2(c):
     lev = (-1.6, -3.7, -5.5, -10.4)
     s = 12.0
-    y = lambda e: 152 + s * e
+    y = lambda e: 144 + s * e
     for e in lev:
         line(c, 60, y(e), 260, y(e), w=1.0)
         text(c, 268, y(e) - 4, ('%.1f' % e).replace('-', '–') + ' eV')
@@ -1171,14 +1167,14 @@ Q9 = Question([
         ]),
         Sub('ii', [
             Text('The accelerating potential difference is increased to 16 kV. A student predicts that the radius '
-                 'of each ring will decrease to one quarter of its original value.'),
-            Text('Explain why the student is wrong.'),
+                 'of each ring will decrease to one quarter of its original value. Explain why the student is '
+                 'wrong.'),
             Lines(3, 2),
         ]),
     ]),
     Part('b', [
         Text('Fig. 9.2 shows four energy levels of an isolated atom.'),
-        Fig(330, 140, fig_9_2, 'Fig. 9.2'),
+        Fig(330, 130, fig_9_2, 'Fig. 9.2'),
         Text('Atoms of a gas are excited so that some of their electrons are in the –1.6 eV energy level.'),
         Sub('i', [
             Text('State the number of different wavelengths of photon that may be emitted as these electrons '

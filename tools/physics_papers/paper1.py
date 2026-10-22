@@ -104,7 +104,7 @@ def fig_2_1(c):
 
 
 def fig_2_2(c):
-    x0, ytop, ybot, xend = 40.0, 152.0, 14.0, 380.0
+    x0, ytop, ybot, xend = 40.0, 120.0, 14.0, 380.0
     ex = 55.0                       # surface of the Earth (not to scale)
     mx, rm = 358.0, 11.0            # centre and radius of the Moon (not to scale)
     hatch(c, x0, ybot, ex - x0, ytop - ybot, spacing=5)
@@ -115,7 +115,7 @@ def fig_2_2(c):
     line(c, x0, ytop, xend, ytop, w=1.0)
     line(c, x0, ytop, x0, ybot - 4, w=1.0)
     text(c, x0 - 5, ytop - 4, '0', anchor='r')
-    text(c, x0 - 7, 80, '<i>φ</i>', anchor='r')
+    text(c, x0 - 7, 64, '<i>φ</i>', anchor='r')
     text(c, xend + 4, ytop - 4, '<i>x</i>')
     xn = x0 + 0.90 * (mx - x0)
     line(c, xn, ytop, xn, ytop + 4)
@@ -182,13 +182,13 @@ def fig_3_1(c):
 def fig_4_1(c):
     x1, x2 = 80.0, 180.0
     rect(c, x1, 30, x2 - x1, 32, lw=0, fill=0.85)            # water
-    polyline(c, [(x1, 140), (x1, 30), (x2, 30), (x2, 140)], w=1.2)
+    polyline(c, [(x1, 128), (x1, 30), (x2, 30), (x2, 128)], w=1.2)
     rect(c, x1 + 0.6, 62, x2 - x1 - 1.2, 14, lw=0.75)          # piston
     hatch(c, x1 + 0.6, 62, x2 - x1 - 1.2, 14, spacing=4)
     text(c, 130, 41, 'water', anchor='c')
     for xx in (100, 130, 160):
-        arrow(c, xx, 108, xx, 79, head=6)
-    text(c, 130, 122, 'atmosphere', anchor='c')
+        arrow(c, xx, 102, xx, 79, head=6)
+    text(c, 130, 112, 'atmosphere', anchor='c')
     text(c, 196, 65, 'piston')
     line(c, 194, 68, 181, 69, w=0.5)
     rect(c, 90, 14, 80, 8, lw=0.75, fill=0.6)
@@ -197,14 +197,14 @@ def fig_4_1(c):
 
 
 def fig_4_2(c):
-    g = Graph(c, 85, 40, 45 * MINOR, 45 * MINOR, xr=(0, 4.5), yr=(0, 4.5), xmajor=0.5, ymajor=0.5,
+    g = Graph(c, 85, 32, 40 * MINOR, 40 * MINOR, xr=(0, 4), yr=(0, 4), xmajor=0.5, ymajor=0.5,
               xticks=[(v, str(v)) for v in range(5)], yticks=[(v, str(v)) for v in range(5)],
               xlabel='<i>V</i> / 10<sup>–3</sup> m<sup>3</sup>', ylabel='<i>p</i> / 10<sup>5</sup> Pa')
-    A, B, C = (1, 1), (4, 1), (1, 4)
+    A, B, C = (0.5, 0.5), (3.5, 0.5), (0.5, 3.5)
     g.points([A, B, C, A], w=1.3)
-    for p, q in (((2.25, 1), (2.75, 1)), ((2.68, 2.32), (2.32, 2.68)), ((1, 2.75), (1, 2.25))):
+    for p, q in (((1.75, 0.5), (2.25, 0.5)), ((2.18, 1.82), (1.82, 2.18)), ((0.5, 2.25), (0.5, 1.75))):
         arrow(c, *g.P(*p), *g.P(*q), w=1.3, head=8)
-    for (xv, yv), s, dx, dy in ((A, 'A', -11, -13), (B, 'B', 5, -13), (C, 'C', -11, 3)):
+    for (xv, yv), s, dx, dy in ((A, 'A', -12, -13), (B, 'B', 5, -13), (C, 'C', -12, 3)):
         px, py = g.P(xv, yv)
         label(c, px + dx, py + dy, s)
     g.finish()
@@ -249,7 +249,7 @@ def fig_6_1(c):
 
 
 def fig_6_2(c):
-    y = 52.0
+    y = 36.0
     circle(c, 60, y, 32, w=1)
     circle(c, 345, y, 16, w=1)
     line(c, 92, y, 200, y, w=1)
@@ -298,43 +298,43 @@ def fig_7_2(c):
 
 
 def fig_8_1(c):
-    yb = 66.0                                   # line of the beam
+    yb, r = 60.0, 56.0                          # line of the beam, radius of the path
+    top = yb + 2 * r + 30
     arrow(c, 8, yb, 52, yb, head=6)
     text(c, 10, yb + 6, 'ions')
     # first barrier with slit S1
-    line(c, 60, 34, 60, yb - 4, w=1.6)
-    line(c, 60, yb + 4, 60, 98, w=1.6)
-    text(c, 60, 103, 'S<sub>1</sub>', anchor='c')
+    line(c, 60, yb - 32, 60, yb - 4, w=1.6)
+    line(c, 60, yb + 4, 60, yb + 32, w=1.6)
+    text(c, 60, yb + 37, 'S<sub>1</sub>', anchor='c')
     # plates, with E and B1 between them
-    rect(c, 74, 88, 124, 5, lw=0.75, fill=0.6)
-    rect(c, 74, 39, 124, 5, lw=0.75, fill=0.6)
-    text(c, 136, 98, '+', anchor='c')
-    text(c, 136, 27, '–', anchor='c')
+    rect(c, 74, yb + 22, 124, 5, lw=0.75, fill=0.6)
+    rect(c, 74, yb - 27, 124, 5, lw=0.75, fill=0.6)
+    text(c, 136, yb + 32, '+', anchor='c')
+    text(c, 136, yb - 39, '–', anchor='c')
     for xx in range(88, 170, 20):
-        for yy in (54, 78):
+        for yy in (yb - 12, yb + 12):
             _cross(c, xx, yy)
     line(c, 60, yb, 210, yb, w=1.0)
-    text(c, 136, 10, '<i>E</i> and <i>B</i><sub>1</sub>', anchor='c')
+    text(c, 136, 6, '<i>E</i> and <i>B</i><sub>1</sub>', anchor='c')
     # second barrier with slit S2, detector above the slit
-    line(c, 210, 26, 210, yb - 4, w=1.6)
-    line(c, 210, yb + 4, 210, 232, w=1.6)
+    line(c, 210, 22, 210, yb - 4, w=1.6)
+    line(c, 210, yb + 4, 210, top, w=1.6)
     text(c, 205, yb + 6, 'S<sub>2</sub>', anchor='r')
-    rect(c, 210, 140, 5, 88, lw=0.75, fill=0.25)
-    text(c, 204, 180, 'detector', anchor='r')
+    rect(c, 210, yb + 2 * r - 50, 5, 76, lw=0.75, fill=0.25)
+    text(c, 204, yb + 2 * r - 14, 'detector', anchor='r')
     # semicircular path in B2
-    r = 64.0
     pts = [(210 + r * math.sin(t), yb + r - r * math.cos(t))
            for t in [math.pi * k / 120 for k in range(121)]]
     polyline(c, pts, w=1.0)
     arrow(c, 210 + r, yb + r - 8, 210 + r, yb + r + 4, head=7)
-    text(c, 282, yb + r - 4, 'path of ions')
-    for xx in range(236, 413, 22):
-        for yy in range(36, 229, 22):
+    text(c, 218 + r, yb + r - 4, 'path of ions')
+    for xx in range(234, 413, 22):
+        for yy in range(30, int(top) - 3, 22):
             d = math.hypot(xx - 210, yy - (yb + r))
-            if abs(d - r) < 7 or (278 <= xx <= 352 and yb + r - 14 <= yy <= yb + r + 10):
+            if abs(d - r) < 7 or (210 + r + 4 <= xx <= 290 + r and yb + r - 14 <= yy <= yb + r + 10):
                 continue
             _cross(c, xx, yy)
-    text(c, 320, 10, '<i>B</i><sub>2</sub> only', anchor='c')
+    text(c, 320, 6, '<i>B</i><sub>2</sub> only', anchor='c')
 
 
 def fig_8_2(c):
@@ -374,19 +374,19 @@ def fig_9_1(c):
 
 
 def fig_10_1(c):
-    line(c, 30, 120, 300, 120, w=1)                 # skin surface
-    rect(c, 118, 120, 84, 6, lw=0.75, fill=0.6)     # gel
-    rect(c, 130, 126, 60, 26, lw=1)                 # transducer
-    text(c, 208, 135, 'transducer')
-    text(c, 112, 121, 'gel', anchor='r')
-    hatch(c, 30, 8, 270, 30, spacing=5)
-    line(c, 30, 38, 300, 38, w=1)
-    label(c, 70, 19, 'bone', anchor='c')
-    text(c, 70, 75, 'soft tissue', anchor='c')
-    arrow(c, 150, 116, 150, 42, head=7)
-    arrow(c, 170, 42, 170, 116, head=7)
-    darrow(c, 262, 120, 262, 38)
-    text(c, 268, 75, '6.0 cm')
+    line(c, 30, 104, 300, 104, w=1)                 # skin surface
+    rect(c, 118, 104, 84, 6, lw=0.75, fill=0.6)     # gel
+    rect(c, 130, 110, 60, 24, lw=1)                 # transducer
+    text(c, 208, 118, 'transducer')
+    text(c, 112, 105, 'gel', anchor='r')
+    hatch(c, 30, 4, 270, 28, spacing=5)
+    line(c, 30, 32, 300, 32, w=1)
+    label(c, 70, 14, 'bone', anchor='c')
+    text(c, 70, 64, 'soft tissue', anchor='c')
+    arrow(c, 150, 100, 150, 36, head=7)
+    arrow(c, 170, 36, 170, 100, head=7)
+    darrow(c, 262, 104, 262, 32)
+    text(c, 268, 64, '6.0 cm')
 
 
 def _planck(lam_nm, T):
@@ -396,8 +396,9 @@ def _planck(lam_nm, T):
 
 
 def fig_10_2(c):
-    g = Graph(c, 45, 35, 50 * MINOR, 30 * MINOR, xr=(0, 2000), yr=(0, 1.2), xmajor=200, ymajor=0.2,
+    g = Graph(c, 45, 32, 50 * MINOR, 30 * MINOR, xr=(0, 2000), yr=(0, 1.2), xmajor=200, ymajor=0.2,
               xticks=[(v, str(v)) for v in range(0, 2001, 400)],
+              yticks=[(0.2 * k, '%.1f' % (0.2 * k)) for k in range(6)] + [(1.2, '')],
               xlabel='<i>λ</i> / nm', ylabel='relative intensity', ylabel_pos='top')
     for lmax, name in ((320, 'P'), (960, 'Q')):
         # temperature for which the peak (from Planck's law) is exactly at lmax
@@ -462,23 +463,20 @@ Q2 = Question([
              'resultant gravitational field strength due to the Earth and the Moon is zero.'),
         Sub('i', [
             Text('Show that the distance of point N from the centre of the Earth is 0.90<i>D</i>.'),
-            Space(7),
+            Space(6),
             Mark(2),
         ]),
         Sub('ii', [
-            Text('Fig. 2.2 shows axes for a graph of gravitational potential <i>φ</i> against distance <i>x</i> '
-                 'from the centre of the Earth. The shaded regions represent the Earth and the Moon. Point S '
-                 'shows the potential at the surface of the Earth.'),
-            Fig(400, 164, fig_2_2, 'Fig. 2.2', note='(not to scale)'),
-            Text('On Fig. 2.2, sketch the variation of <i>φ</i> with <i>x</i> from the surface of the Earth to '
-                 'the surface of the Moon.'),
+            Text('On Fig. 2.2, sketch the variation of gravitational potential <i>φ</i> with distance <i>x</i> '
+                 'from the centre of the Earth, between the surface of the Earth and the surface of the Moon. '
+                 'Point S shows the potential at the surface of the Earth.'),
+            Fig(400, 132, fig_2_2, 'Fig. 2.2', note='(not to scale)'),
             Mark(2),
         ]),
         Sub('iii', [
-            Text('A spacecraft travels from the Earth to the Moon. Its engines are switched off shortly after '
-                 'launch.'),
-            Text('Use your answer to (b)(ii) to explain why the spacecraft needs to be launched with only '
-                 'enough kinetic energy to reach point N.'),
+            Text('A spacecraft travels from the Earth to the Moon with its engines switched off after launch. '
+                 'Use your answer to (b)(ii) to explain why it needs to be launched with only enough kinetic '
+                 'energy to reach point N.'),
             Lines(2, 1),
         ]),
     ]),
@@ -495,8 +493,8 @@ Q2 = Question([
         ]),
         Sub('ii', [
             Text('A student states that, because the resistive force acts in the opposite direction to the '
-                 'velocity of the satellite, the speed of the satellite must decrease.'),
-            Text('Use your answer to (c)(i) to explain why the student is wrong.'),
+                 'velocity of the satellite, the speed of the satellite must decrease. Use your answer to (c)(i) '
+                 'to explain why the student is wrong.'),
             Lines(2, 1),
         ]),
     ]),
@@ -556,17 +554,17 @@ Q4 = Question([
     Part('a', [
         Text('A cylinder fitted with a light frictionless piston contains 0.150 kg of water at 100 °C, as shown '
              'in Fig. 4.1.'),
-        Fig(270, 146, fig_4_1, 'Fig. 4.1'),
+        Fig(270, 132, fig_4_1, 'Fig. 4.1'),
         Text('The atmosphere above the piston has a constant pressure of 1.01 × 10<sup>5</sup> Pa. The water is '
              'heated until all of it has turned into steam at 100 °C. The specific latent heat of vaporisation '
              'of water is 2.26 × 10<sup>6</sup> J kg<sup>–1</sup>. Data for water and steam at 100 °C are given '
              'in Table 4.1.'),
         Table([['', 'water', 'steam'],
                ['density / kg m<sup>–3</sup>', '958', '0.598']],
-              [190, 100, 100], 'Table 4.1'),
+              [190, 100, 100], 'Table 4.1', row_heights=[22, 22]),
         Sub('i', [
             Text('Calculate the work done <b>on</b> the water as it turns into steam.'),
-            Space(8),
+            Space(7),
             Answer('work done on the water', 'J', 2),
         ]),
         Sub('ii', [
@@ -576,23 +574,22 @@ Q4 = Question([
             Answer('increase in internal energy', 'J', 2),
         ]),
         Sub('iii', [
-            Text('The temperature of the water does not change as it turns into steam.'),
-            Text('Explain, in terms of its molecules, why the internal energy of the water increases.'),
+            Text('The temperature of the water does not change as it turns into steam. Explain, in terms of '
+                 'its molecules, why the internal energy of the water increases.'),
             Lines(3, 2),
         ]),
     ]),
     Part('b', [
         Text('A fixed mass of an ideal gas is taken around the cycle A → B → C → A shown in Fig. 4.2.'),
-        Fig(360, 305, fig_4_2, 'Fig. 4.2'),
+        Fig(340, 265, fig_4_2, 'Fig. 4.2'),
         Sub('i', [
             Text('Determine the net work done <b>on</b> the gas during one cycle.'),
             Space(6),
             Answer('net work done on the gas', 'J', 2),
         ]),
         Sub('ii', [
-            Text('Use the first law of thermodynamics to explain whether, during one cycle, there is a net '
-                 'transfer of thermal energy to the gas or from the gas. State the magnitude of this net '
-                 'transfer.'),
+            Text('Use the first law of thermodynamics to explain whether there is a net transfer of thermal '
+                 'energy to or from the gas during one cycle. State its magnitude.'),
             Lines(3, 2),
         ]),
     ]),
@@ -633,7 +630,7 @@ Q5 = Question([
              'gravitational field strength is smaller.'),
         Text('By considering the resultant force on the block when it is displaced from its equilibrium '
              'position, explain why the student is wrong.'),
-        Lines(4, 2),
+        Lines(4, 3),
     ]),
 ])
 
@@ -655,7 +652,7 @@ Q6 = Question([
     Part('c', [
         Text('Sphere X is now connected by a long thin wire to an isolated metal sphere Y of radius 0.050 m. '
              'Sphere Y is initially uncharged. The arrangement is shown in Fig. 6.2.'),
-        Fig(400, 104, fig_6_2, 'Fig. 6.2', note='(not to scale)'),
+        Fig(400, 86, fig_6_2, 'Fig. 6.2', note='(not to scale)'),
         Text('The spheres are far apart, so that the charge on each sphere has no effect on the potential of '
              'the other sphere. Charge flows along the wire until the spheres are at the same potential.'),
         Sub('i', [
@@ -729,16 +726,14 @@ Q7 = Question([
 
 Q8 = Question([
     Text('Fig. 8.1 shows the main parts of a mass spectrometer. The apparatus is in a vacuum.'),
-    Fig(420, 236, fig_8_1, 'Fig. 8.1'),
-    Text('Positive ions pass through slit S<sub>1</sub> into a region between two parallel metal plates. In '
-         'this region there is a uniform electric field of field strength <i>E</i> and a uniform magnetic field '
-         'of flux density <i>B</i><sub>1</sub>. Ions that pass through slit S<sub>2</sub> enter a region where '
-         'there is a uniform magnetic field of flux density <i>B</i><sub>2</sub> only. Both magnetic fields are '
-         'directed into the page. The ions travel in a semicircle and arrive at a detector.'),
+    Fig(420, 206, fig_8_1, 'Fig. 8.1'),
+    Text('Positive ions pass through slit S<sub>1</sub> into the region between two parallel metal plates, '
+         'where there is a uniform electric field of strength <i>E</i> and a uniform magnetic field of flux '
+         'density <i>B</i><sub>1</sub>. Beyond slit S<sub>2</sub> there is a uniform magnetic field of flux '
+         'density <i>B</i><sub>2</sub> only. Both magnetic fields are into the page.'),
     Part('a', [
         Text('Explain why the only ions that pass through slit S<sub>2</sub> are those with speed '
-             '<i>v</i> given by'),
-        Eq('<i>v</i> = ', Frac('<i>E</i>', '<i>B</i><sub>1</sub>'), '.'),
+             '<i>E</i> / <i>B</i><sub>1</sub>.'),
         Lines(3, 2),
     ]),
     Part('b', [
@@ -754,8 +749,8 @@ Q8 = Question([
             Answer('distance', 'm', 3),
         ]),
         Sub('ii', [
-            Text('Some of the neon-22 ions in the beam are doubly charged (<sup>22</sup>Ne<sup>2+</sup>).'),
-            Text('Determine the distance from slit S<sub>2</sub> at which these ions arrive at the detector.'),
+            Text('Some of the neon-22 ions in the beam are doubly charged (<sup>22</sup>Ne<sup>2+</sup>). '
+                 'Determine the distance from slit S<sub>2</sub> at which these ions arrive at the detector.'),
             Space(7),
             Answer('distance', 'm', 2),
         ]),
@@ -830,12 +825,10 @@ Q10 = Question([
     Part('a', [
         Text('Ultrasound is used to obtain diagnostic information about structures inside the body. '
              'Table 10.1 shows the specific acoustic impedance <i>Z</i> of some materials.'),
-        Table([['material', '<i>Z</i> / kg m<sup>–2</sup> s<sup>–1</sup>'],
-               ['air', '4.30 × 10<sup>2</sup>'],
-               ['gel', '1.50 × 10<sup>6</sup>'],
-               ['soft tissue', '1.63 × 10<sup>6</sup>'],
-               ['bone', '7.80 × 10<sup>6</sup>']],
-              [150, 170], 'Table 10.1', row_heights=[22] * 5),
+        Table([['material', 'air', 'gel', 'soft tissue', 'bone'],
+               ['<i>Z</i> / kg m<sup>–2</sup> s<sup>–1</sup>', '4.30 × 10<sup>2</sup>', '1.50 × 10<sup>6</sup>',
+                '1.63 × 10<sup>6</sup>', '7.80 × 10<sup>6</sup>']],
+              [130, 80, 80, 80, 80], 'Table 10.1'),
         Text('Use data from Table 10.1 to explain why a gel is applied between the ultrasound transducer and '
              'the skin.'),
         Lines(3, 2),
@@ -843,7 +836,7 @@ Q10 = Question([
     Part('b', [
         Text('A pulse of ultrasound passes through a layer of soft tissue of thickness 6.0 cm and is partly '
              'reflected at a boundary between the soft tissue and bone, as shown in Fig. 10.1.'),
-        Fig(330, 158, fig_10_1, 'Fig. 10.1'),
+        Fig(330, 136, fig_10_1, 'Fig. 10.1'),
         Text('The reflected pulse returns through the same soft tissue to the transducer. The linear '
              'attenuation coefficient of soft tissue for this ultrasound is 0.23 cm<sup>–1</sup>.'),
         Text('Calculate the intensity of the reflected pulse arriving at the transducer as a fraction of the '
@@ -854,10 +847,10 @@ Q10 = Question([
     Part('c', [
         Text('Fig. 10.2 shows the variation with wavelength <i>λ</i> of the intensity of the radiation emitted '
              'by two stars P and Q. Each curve has been scaled so that its maximum value is 1.0.'),
-        Fig(360, 228, fig_10_2, 'Fig. 10.2'),
+        Fig(360, 220, fig_10_2, 'Fig. 10.2'),
         Text('The radius of star Q is 45 times the radius of star P. A student states that star P must have the '
-             'greater luminosity because it has the higher surface temperature.'),
-        Text('Use Fig. 10.2 to determine the ratio of the luminosity of star Q to the luminosity of star P.'),
+             'greater luminosity because it has the higher surface temperature. Use Fig. 10.2 to determine the '
+             'ratio of the luminosity of star Q to the luminosity of star P.'),
         Space(8),
         Answer('ratio', '', 3),
     ]),
@@ -865,17 +858,10 @@ Q10 = Question([
         Text('A spectral line of hydrogen has a wavelength of 656.3 nm when measured in a laboratory. In the '
              'light from a distant galaxy, the same line has a wavelength of 678.9 nm. The galaxy is a distance '
              'of 4.6 × 10<sup>24</sup> m from the Earth.'),
-        Sub('i', [
-            Text('Assume that the galaxy has moved away from the Earth at a constant speed since the Big Bang.'),
-            Text('Estimate the age of the universe, in years.'),
-            Space(7),
-            Answer('age', 'years', 2),
-        ]),
-        Sub('ii', [
-            Text('A second galaxy is twice as far from the Earth. Explain, with reference to Hubble’s law, why '
-                 'it gives the same estimate for the age of the universe.'),
-            Lines(2, 1),
-        ]),
+        Text('Assuming that the galaxy has moved away from the Earth at a constant speed since the Big Bang, '
+             'estimate the age of the universe, in years.'),
+        Space(7),
+        Answer('age', 'years', 2),
     ]),
 ])
 
@@ -1025,10 +1011,12 @@ MS = [
     ], note='allow <i>E</i><sub>K</sub> / <i>E</i> = (<i>x</i><sub>0</sub><sup>2</sup> – <i>x</i><sup>2</sup>) / '
             '<i>x</i><sub>0</sub><sup>2</sup> = 3/4. An answer of 0.5 scores 0.'),
     MSRow('5(c)', [
-        ('at equilibrium the tension in the spring balances the weight, so for a displacement <i>x</i> from '
-         'equilibrium the resultant force is –<i>kx</i>, which does not depend on <i>g</i>', 'B1'),
+        ('at the equilibrium position the tension in the spring equals the weight (<i>ke</i> = <i>mg</i>), so '
+         'only the equilibrium extension is smaller on the Moon', 'B1'),
+        ('for a displacement <i>x</i> from equilibrium the resultant force is –<i>kx</i>, which does not depend '
+         'on <i>g</i>', 'B1'),
         ('<i>a</i> = –(<i>k</i> / <i>m</i>)<i>x</i>, so <i>ω</i><sup>2</sup> = <i>k</i> / <i>m</i> and the '
-         'period is unchanged (only the equilibrium extension changes)', 'B1'),
+         'period is unchanged', 'B1'),
     ]),
     # ---------------------------------------------------------------- Q6
     MSRow('6(a)', [
@@ -1161,16 +1149,13 @@ MS = [
          '45<sup>2</sup> × (1 / 3.0)<sup>4</sup>', 'C1'),
         ('ratio = 25', 'A1'),
     ], note='The cooler star Q is 25 times as luminous as P because of its much larger radius.'),
-    MSRow('10(d)(i)', [
+    MSRow('10(d)', [
         ('<i>v</i> = <i>c</i>Δ<i>λ</i> / <i>λ</i> = 3.00 × 10<sup>8</sup> × (678.9 – 656.3) / 656.3 = '
          '1.03 × 10<sup>7</sup> m s<sup>–1</sup>', 'C1'),
         ('<i>t</i> = <i>d</i> / <i>v</i> = 4.6 × 10<sup>24</sup> / 1.03 × 10<sup>7</sup> = '
          '4.5 × 10<sup>17</sup> s = 1.4 × 10<sup>10</sup> years', 'A1'),
-    ]),
-    MSRow('10(d)(ii)', [
-        ('<i>v</i> = <i>H</i><sub>0</sub><i>d</i> so <i>v</i> ∝ <i>d</i>: twice the distance means twice the '
-         'speed, so <i>t</i> = <i>d</i> / <i>v</i> = 1 / <i>H</i><sub>0</sub> is the same', 'B1'),
-    ]),
+    ], note='<i>t</i> = <i>d</i> / <i>v</i> = 1 / <i>H</i><sub>0</sub>, so any galaxy that obeys Hubble’s law '
+            'gives the same estimate.'),
 ]
 
 def _tie_refs(blocks):

@@ -4,10 +4,10 @@ Every numerical answer in the mark scheme was checked with a Python script.
 Data and Formulae values are those printed in the 2025 papers
 (g = 9.81, e = 1.60e-19, h = 6.63e-34, c = 3.00e8, k = 1.38e-23, R = 8.31 ...).
 """
-import math
-
 from engine import *
 from figs import *
+
+import math
 
 # ====================================================================== helpers
 
@@ -18,7 +18,7 @@ def fmt(v, dec=None):
     if dec is not None:
         s = '%.*f' % (dec, v)
         if float(s) == 0:
-            s = '%.*f' % (dec, 0.0)
+            s = '0'
     elif abs(v - round(v)) < 1e-9:
         s = str(int(round(v)))
     else:
@@ -55,7 +55,7 @@ def grid_graph(c, gx, gy, xr, yr, xmajor, ymajor, xlabel, ylabel,
             label(c, px, edge + 6, fmt(v, xdec), anchor='c')
         else:
             line(c, px, edge, px, edge - 3)
-            label(c, px, edge - 13, fmt(v, xdec), anchor='c')
+            label(c, px, edge - 14, fmt(v, xdec), anchor='c')
     tw = 0
     for v in frange(yr[0], yr[1], ystep or ymajor):
         py = g.P(xr[0], v)[1]
@@ -255,6 +255,28 @@ def fig_2_1(c):
     g.curve(lambda r: -60.0 / r, 4.0, 20.0, w=1.2)
 
 
+def fig_2_2(c):
+    cx, cy, R = 190, 62, 30
+    ox, oy = 128, 18
+    polyline(c, arc_pts(cx, cy, ox, 0, 180, n=60, ry=oy), dash=[4, 3])
+    circle(c, cx, cy, R, w=1.0, fill=1)
+    polyline(c, arc_pts(cx, cy, R, 180, 360, n=30, ry=6), w=0.5)
+    polyline(c, arc_pts(cx, cy, ox, 180, 360, n=60, ry=oy), dash=[4, 3])
+    # direction of motion of the satellite, and rotation of the planet
+    a = arc_pts(cx, cy, ox, 296, 314, n=4, ry=oy)
+    arrow(c, a[0][0], a[0][1], a[-1][0], a[-1][1], head=7)
+    line(c, cx, cy - R - 12, cx, cy + R + 20, w=0.6, dash=[5, 3])
+    arc_arrow(c, cx, cy + R + 10, 14, 200, 500, ry=4)
+    # satellite
+    t = math.radians(-28)
+    sx, sy = cx + ox * math.cos(t), cy + oy * math.sin(t)
+    rect(c, sx - 4, sy - 4, 8, 8, fill=0.6)
+    leader(c, 340, 22, sx + 5, sy - 2, 'satellite')
+    leader(c, 336, 92, cx + ox * math.cos(math.radians(30)) + 2, cy + oy * math.sin(math.radians(30)), 'orbit')
+    leader(c, 52, 98, cx - 0.72 * R, cy + 0.72 * R, 'planet', anchor='r')
+    text(c, cx + 18, cy + R + 16, 'axis of rotation')
+
+
 Q2 = Question([
     Text('A planet may be considered to be an isolated uniform sphere of radius 4.0 × 10<sup>6</sup> m.'),
     Text('Fig. 2.1 shows the variation of the gravitational potential <i>ϕ</i> with distance <i>r</i> from '
@@ -273,17 +295,24 @@ Q2 = Question([
     Part('c', [
         Text('The planet rotates about its axis once every 12.0 hours. A satellite of mass 250 kg is to be '
              'placed in an equatorial orbit so that it remains above the same point on the surface of '
-             'the planet.'),
+             'the planet, as illustrated in Fig. 2.2.'),
+        Fig(380, 124, fig_2_2, 'Fig. 2.2', note='(not to scale)'),
         Sub('i', [
             Text('Use Fig. 2.1 to show that the radius of the orbit is 1.4 × 10<sup>7</sup> m.'),
-            Space(11),
+            Space(10),
             Mark(3),
         ]),
         Sub('ii', [
             Text('Determine the minimum energy needed to move the satellite from rest on the surface of the '
                  'planet into this orbit. Ignore the rotation of the planet.'),
-            Space(12),
+            Space(11),
             Answer('energy', 'J', 3),
+        ]),
+        Sub('iii', [
+            Text('The satellite is launched from a point on the equator of the planet. Suggest why the energy '
+                 'that must be supplied is less than your answer to (c)(ii) when the rotation of the planet is '
+                 'taken into account.'),
+            Lines(2, 1),
         ]),
     ]),
 ])
@@ -315,6 +344,10 @@ MS2 = [
          '(2 × 1.42 × 10<sup>7</sup>) = 5.3 × 10<sup>8</sup> J', 'C1'),
         ('energy = 3.2 × 10<sup>9</sup> J', 'A1'),
     ], note='2.7 × 10<sup>9</sup> J (kinetic energy in orbit omitted) scores C1 only'),
+    MSRow('2(c)(iii)', [
+        ('before launch the satellite already moves (at about 580 m s<sup>–1</sup>) with the surface, in the '
+         'direction of the orbit, so it already has some kinetic energy', 'B1'),
+    ]),
 ]
 
 # ================================================================== Question 3
@@ -353,8 +386,10 @@ def fig_3_2(c):
     # direction of the change
     a, b = g.P(116, 100 * (150 / 116) ** 1.4), g.P(106, 100 * (150 / 106) ** 1.4)
     arrow(c, a[0], a[1], b[0], b[1], w=1.2, head=9)
-    px, py = g.P(116, 100 * (150 / 116) ** 1.4)
-    label(c, px + 6, py + 10, 'rapid compression')
+    lx, ly = g.P(100, 236)
+    px, py = g.P(92, 100 * (150 / 92) ** 1.4)
+    line(c, lx - 2, ly + 3, px + 2, py + 2, w=0.5)
+    label(c, lx, ly, 'rapid compression')
 
 
 Q3 = Question([
@@ -590,26 +625,6 @@ def fig_5_1(c):
     text(c, (ox + px) / 2, sy + 19, '<i>x</i>', anchor='c')
 
 
-def fig_5_3(c):
-    gx, gy = 70, 34
-    g = grid_graph(c, gx, gy, (0, 1.6), (-3, 3), 0.2, 1, '<i>t</i> / s', '<i>x</i> / cm', xdec=1)
-    # second vertical scale, on the right, for the velocity of Y (5 cm s-1 per cm)
-    rx = gx + g.w
-    line(c, rx, gy, rx, gy + g.h, w=1.0)
-    for v in range(-15, 16, 5):
-        py = g.P(0, v / 5.0)[1]
-        line(c, rx, py, rx + 3, py)
-        label(c, rx + 5, py - 3.9, fmt(v))
-    text(c, rx + 30, gy + g.h * 0.62, '<i>v</i> / cm s<sup>–1</sup>')
-    g.curve(lambda t: 2.0 * math.sin(2 * math.pi * t / 0.8), 0, 1.6, w=1.2)
-    g.curve(lambda t: 12.0 / 5.0 * math.cos(2 * math.pi * (t - 0.3) / 0.8), 0, 1.6, w=1.2)
-    # curve labels above the grid, with leaders to the maxima
-    for t0, y0, s in ((0.2, 2.0, '<i>x</i> of X'), (1.1, 2.4, '<i>v</i> of Y')):
-        px, py = g.P(t0, y0)
-        line(c, px, py + 2, px, gy + g.h + 8, w=0.5)
-        text(c, px, gy + g.h + 11, s, anchor='c')
-
-
 def fig_5_2(c):
     ox, oy, w, h = 46, 18, 250, 108
     sketch_axes(c, ox, oy, w, h, '<i>f</i>', '<i>A</i>')
@@ -620,6 +635,26 @@ def fig_5_2(c):
     sx, sy = w / 2.3, (h * 0.8) / pk
     pts = [(ox + sx * f, oy + sy * amp(f)) for f in [k / 400 for k in range(0, 921)]]
     polyline(c, pts, w=1.2)
+
+
+def fig_5_3(c):
+    gx, gy = 70, 34
+    g = grid_graph(c, gx, gy, (0, 1.6), (-3, 3), 0.2, 1, '<i>t</i> / s', '<i>x</i> / cm', xdec=1)
+    # second vertical scale, on the right, for the velocity of Y (5 cm s-1 per cm)
+    rx = gx + g.w
+    line(c, rx, gy, rx, gy + g.h, w=1.0)
+    for v in range(-15, 16, 5):
+        py = g.P(0, v / 5.0)[1]
+        line(c, rx, py, rx + 3, py)
+        label(c, rx + 9, py - 3.9, fmt(v))
+    text(c, rx + 32, gy + g.h * 0.62, '<i>v</i> / cm s<sup>–1</sup>')
+    g.curve(lambda t: 2.0 * math.sin(2 * math.pi * t / 0.8), 0, 1.6, w=1.2)
+    g.curve(lambda t: 12.0 / 5.0 * math.cos(2 * math.pi * (t - 0.3) / 0.8), 0, 1.6, w=1.2)
+    # curve labels above the grid, with leaders to the maxima
+    for t0, y0, s in ((0.2, 2.0, '<i>x</i> of X'), (1.1, 2.4, '<i>v</i> of Y')):
+        px, py = g.P(t0, y0)
+        line(c, px, py + 2, px, gy + g.h + 8, w=0.5)
+        text(c, px, gy + g.h + 11, s, anchor='c')
 
 
 Q5 = Question([
@@ -742,10 +777,6 @@ def fig_6_2(c):
 
 Q6 = Question([
     Part('a', [
-        Text('Define electric field strength.'),
-        Lines(2, 1),
-    ]),
-    Part('b', [
         Text('Two point charges A and B are separated by a distance of 0.30 m in a vacuum, as shown in '
              'Fig. 6.1.'),
         Fig(400, 84, fig_6_1, 'Fig. 6.1'),
@@ -753,16 +784,16 @@ Q6 = Question([
         Sub('i', [
             Text('Determine the distance from A of the point on the line through A and B at which the electric '
                  'field strength is zero.'),
-            Space(10),
+            Space(12),
             Answer('distance', 'm', 3),
         ]),
         Sub('ii', [
-            Text('Calculate the electric potential at the point in (b)(i).'),
-            Space(7),
+            Text('Calculate the electric potential at the point in (a)(i).'),
+            Space(8),
             Answer('potential', 'V', 2),
         ]),
     ]),
-    Part('c', [
+    Part('b', [
         Text('Electrons are accelerated from rest through a potential difference (p.d.) of 1500 V. They then '
              'enter the region between two horizontal metal plates, midway between the plates, as shown in '
              'Fig. 6.2.'),
@@ -788,28 +819,25 @@ Q6 = Question([
 ])
 
 MS6 = [
-    MSRow('6(a)', [
-        ('force per unit positive charge', 'B1'),
-    ]),
-    MSRow('6(b)(i)', [
+    MSRow('6(a)(i)', [
         ('fields of A and B are in opposite directions only outside AB, and the point must be nearer the '
          'smaller charge, so it is beyond B', 'B1'),
         ('8.0 / <i>x</i><sup>2</sup> = 2.0 / (<i>x</i> – 0.30)<sup>2</sup>', 'C1'),
         ('<i>x</i> = 0.60 m', 'A1'),
     ], note='0.20 m (a point between A and B) scores 0'),
-    MSRow('6(b)(ii)', [
+    MSRow('6(a)(ii)', [
         ('<i>V</i> = <i>Q</i> / 4π<i>ε</i><sub>0</sub><i>r</i> for each charge, with the potentials added as '
          'scalars', 'C1'),
         ('<i>V</i> = 8.99 × 10<sup>9</sup> × [(8.0 × 10<sup>–9</sup> / 0.60) – (2.0 × 10<sup>–9</sup> / 0.30)] '
          '= 60 V', 'A1'),
-    ], note='ecf (b)(i)'),
-    MSRow('6(c)(i)', [
+    ], note='ecf (a)(i)'),
+    MSRow('6(b)(i)', [
         ('<i>E</i> = 120 / 0.025 = 4800 V m<sup>–1</sup> and <i>a</i> = <i>eE</i> / <i>m</i> = '
          '8.4 × 10<sup>14</sup> m s<sup>–2</sup>', 'C1'),
         ('<i>t</i> = 0.060 / 2.30 × 10<sup>7</sup> = 2.6 × 10<sup>–9</sup> s', 'C1'),
         ('distance = ½<i>at</i><sup>2</sup> = 2.9 × 10<sup>–3</sup> m', 'A1'),
     ]),
-    MSRow('6(c)(ii)', [
+    MSRow('6(b)(ii)', [
         ('deflection = ½(<i>qE</i> / <i>m</i>)(<i>L</i> / <i>v</i>)<sup>2</sup> and ½<i>mv</i><sup>2</sup> = '
          '<i>qV</i>, so deflection = <i>EL</i><sup>2</sup> / 4<i>V</i>, which does not depend on the mass '
          '(or charge) of the particle', 'B1'),
@@ -853,7 +881,7 @@ def fig_7_1(c):
 
 
 def fig_7_2(c):
-    g = grid_graph(c, 74, 40, (0, 20), (-0.4, 2.0), 2, 0.4, '<i>t</i> / s', 'ln (<i>V</i> / V)')
+    g = grid_graph(c, 74, 36, (0, 20), (-0.4, 2.0), 2, 0.4, '<i>t</i> / s', 'ln (<i>V</i> / V)', ydec=1)
     g.line(0, math.log(6.0), 20, math.log(6.0) - 20 / 9.4, w=1.2)
 
 
@@ -893,7 +921,7 @@ Q7 = Question([
              'resistance 10.0 kΩ.'),
         Text('Fig. 7.2 shows the variation with time <i>t</i> of ln (<i>V</i> / V), where <i>V</i> is the p.d. '
              'across X during this discharge.'),
-        Fig(380, 236, fig_7_2, 'Fig. 7.2'),
+        Fig(380, 222, fig_7_2, 'Fig. 7.2'),
         Text('Use Fig. 7.2 to determine the capacitance <i>C</i> of X.'),
         Space(11),
         Answer('<i>C</i>', 'μF', 3),
@@ -959,8 +987,7 @@ def fig_8_2(c):
     resistor(c, 352, y1, 352, y2)
     wire(c, [(352, y2), (330, y2)])
     text(c, 364, (y1 + y2) / 2 - 4, '8.0 Ω')
-    leader(c, 200, 86, 200, y1 + 1, 'leads', anchor='c')
-    line(c, 200, y2 + 1, 200, y1 - 1, w=0.5)
+    text(c, 207, (y1 + y2) / 2 - 4, 'leads', anchor='c')
 
 
 Q8 = Question([
