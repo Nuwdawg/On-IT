@@ -12,6 +12,7 @@ import re
 from reportlab.lib.pagesizes import A4, landscape
 from reportlab.pdfgen import canvas as rl_canvas
 
+import codes
 from richtext import (Box, Frac, Sqrt, Sup, draw_line, draw_rich, draw_runs,
                       line_width, math_box, runs, runs_width, width, wrap)
 
@@ -111,6 +112,8 @@ DOTS_END = 544.9
 DOTS_START = 350.0               # where the dots of "x = ...... unit" begin
 DOT_W = width('.', 'Arial', 11)
 GREY = 0.93
+SERIES = 'August/September 2026'     # a series Cambridge does not run
+SERIES_CODE = 'A/S/26'
 INK = (0.137, 0.122, 0.125)
 
 
@@ -470,11 +473,23 @@ class QPDoc:
     def __init__(self, paper):
         self.paper = paper
         self.n = paper.number
-        self.foot_left = 'Not an official Cambridge document'
-        self.foot_centre = f'9702 Practice Paper {self.n}'
+        self.comp = f'9702/4{self.n}'
+        self.series = SERIES
+        self.foot_left = 'Not a Cambridge paper'
+        self.foot_centre = f'9702/4{self.n}/{SERIES_CODE}'
+
+    def page_marks(self, c, pageno, cover=False):
+        """Barcode strip at the top of every page, QR code in the footer."""
+        c.setFont('Arial', 8)
+        c.drawString(82.2 if cover else 83.9, y_(19.3 + 6.4), f'* {codes.page_code(pageno)} *')
+        c.drawString(226.7 if cover else 229.1, y_(19.1 + 6.4), 'NGG')
+        codes.code39(c, 65.5, y_(57.8), 179.5, 28.0, codes.page_code(pageno))
+        if not cover:
+            codes.qr(c, 170.8, y_(812.0), 15.0)
 
     def furniture(self, c, pageno, total, blank=False, turn_over=True):
         corner_marks(c)
+        self.page_marks(c, pageno)
         margin_bar(c, 'right' if pageno % 2 == 0 else 'left')
         text_at(c, CENTRE, 38.5, str(pageno), anchor='c', bold=True)
         c.setFont('Arial', 8)
@@ -488,6 +503,14 @@ class QPDoc:
     # ---------------------------------------------------------- cover
     def cover(self, c, total):
         corner_marks(c)
+        self.page_marks(c, 1, cover=True)
+        codes.logo(c, 262.2, y_(56.2), 538.6 - 262.2, 29.0)
+        codes.qr(c, 27.0, y_(192.8), 20.0)
+        codes.code39(c, 26.8, y_(337.0), 21.2, 113.0, codes.SPEED_OF_LIGHT, vertical=True)
+        sym = ['*'] + list(codes.SPEED_OF_LIGHT) + ['*']
+        c.setFont('Arial', 8.4)
+        for k, ch in enumerate(sym):
+            c.drawCentredString(24.0, y_(224.0 + 6.3 + (337.0 - 224.0 - 6.3) * k / (len(sym) - 1)), ch)
         text_at(c, 56.7, 104.6, f'A Level Physics Practice Paper {self.n}', size=18, bold=True)
         c.setLineWidth(0.5)
         c.setStrokeColorRGB(*INK)
@@ -508,11 +531,11 @@ class QPDoc:
                           (371.4, 189.8, 'CANDIDATE'), (371.4, 202.1, 'NUMBER')):
             c.drawString(x, y_(t + 7.4), s)
         text_at(c, 56.7, 235.9, 'PHYSICS', bold=True)
-        text_at(c, 538.6, 235.9, f'9702 Practice Paper {self.n}', anchor='r', bold=True)
+        text_at(c, 538.6, 235.9, self.comp, anchor='r', bold=True)
         s10 = 10
         tx = lambda x, t, s, **k: text_at(c, x, t, s, size=s10, **k)
         tx(56.7, 256.7, 'Paper 4 A Level Structured Questions')
-        tx(538.6, 256.7, 'Written in the 2025 style', anchor='r', bold=True)
+        tx(538.6, 256.7, self.series, anchor='r', bold=True)
         tx(538.6, 276.7, '2 hours', anchor='r', bold=True)
         tx(56.7, 301.7, 'You must answer on the question paper.')
         tx(56.7, 326.7, 'No additional materials are needed.')
@@ -541,7 +564,7 @@ class QPDoc:
         msg = f'This document has <b>{total}</b> pages. Any blank pages are indicated.'
         text_at(c, CENTRE, 733.4, msg, size=10, anchor='c')
         c.setFont('Arial', 8)
-        c.drawString(56.7, y_(768.8 + 6.4), f'9702 Practice Paper {self.n} (2025 style)')
+        c.drawString(56.7, y_(768.8 + 6.4), f'Practice Paper {self.n}')
         c.drawString(56.7, y_(778.8 + 6.4), self.foot_left)
         text_at(c, 538.6, 777.2, '[Turn over', size=10, anchor='r', bold=True)
 
@@ -687,24 +710,25 @@ class MSDoc:
         self.n = paper.number
 
     def header(self, c, pageno, total):
-        draw_rich(c, MS_L, ly(21.6 + 8.8), f'9702 Practice Paper {self.n}')
+        draw_rich(c, MS_L, ly(21.6 + 8.8), f'9702/4{self.n}')
         draw_rich(c, LW / 2, ly(21.6 + 8.8), f'A Level Physics Practice Paper {self.n} – Mark Scheme', anchor='c')
         draw_rich(c, LW / 2, ly(34.2 + 8.8), 'PRACTICE PAPER', anchor='c', bold=True)
-        draw_rich(c, 779.8, ly(21.6 + 8.8), 'Written in the 2025 style', anchor='r')
+        draw_rich(c, 779.8, ly(21.6 + 8.8), SERIES, anchor='r')
         c.setFont('Arial', 8)
-        c.drawString(MS_L, ly(549.9 + 6.4), 'Not an official Cambridge document')
+        c.drawString(MS_L, ly(549.9 + 6.4), 'Not a Cambridge paper')
         c.drawCentredString(LW / 2, ly(549.9 + 6.4), f'Page {pageno} of {total}')
 
     def cover(self, c, total):
         y = lambda t: PH - t
+        codes.logo(c, CENTRE - 95, y(62), 190, 34, align='center')
         draw_rich(c, 56.7, y(104.6 + 14.4), f'A Level Physics Practice Paper {self.n}', size=18, bold=True)
         c.setLineWidth(0.5)
         c.line(56.7, y(137), 538.6, y(137))
         c.line(56.7, y(215), 538.6, y(215))
         draw_rich(c, 56.7, y(150), 'PHYSICS', size=10, bold=True)
-        draw_rich(c, 538.6, y(150), f'9702 Practice Paper {self.n}', size=10, anchor='r', bold=True)
+        draw_rich(c, 538.6, y(150), f'9702/4{self.n}', size=10, anchor='r', bold=True)
         draw_rich(c, 56.7, y(168), 'Paper 4 A Level Structured Questions', size=10)
-        draw_rich(c, 538.6, y(168), 'Written in the 2025 style', size=10, anchor='r', bold=True)
+        draw_rich(c, 538.6, y(168), SERIES, size=10, anchor='r', bold=True)
         draw_rich(c, 56.7, y(186), 'MARK SCHEME', size=10)
         draw_rich(c, 56.7, y(204), 'Maximum Mark: 100', size=10)
         c.rect(165.0, y(278), 330.0, 42.0)
@@ -725,7 +749,7 @@ class MSDoc:
         c.line(56.7, y(735), 538.6, y(735))
         draw_rich(c, CENTRE, y(749), f'This document consists of <b>{total}</b> printed pages.', size=10, anchor='c')
         c.setFont('Arial', 8)
-        c.drawString(56.7, y(792), 'Not an official Cambridge document')
+        c.drawString(56.7, y(792), 'Not a Cambridge paper')
         draw_rich(c, 538.6, y(792), '[Turn over', size=10, anchor='r', bold=True)
 
     def guidance(self, c):
